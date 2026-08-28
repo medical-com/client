@@ -1,0 +1,107 @@
+import { Suspense } from "react";
+import { BrowserRouter, useLocation, useRoutes } from "react-router-dom";
+
+import { Navbar } from "@/components/layout/navbar";
+import { DashboardNavbar } from "@/components/layout/dashboard-navigation";
+import { Footer } from "@/components/layout/footer";
+
+import Home from "@/pages/home";
+import About from "@/pages/about";
+import Login from "@/pages/auth/login";
+import Appointment from "@/pages/appointment";
+
+// Dashboard pages
+import Dashboard from "@/pages/dashboard";
+import DashboardAppointments from "@/pages/dashboard/appointments";
+import DashboardAppointment from "@/pages/dashboard/appointment";
+import DashboardPatients from "@/pages/dashboard/patients";
+import DashboardPatient from "@/pages/dashboard/patient";
+import DashboardSettings from "@/pages/dashboard/settings";
+
+const AppRoutes = () => {
+  const routes = useRoutes([
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "/auth",
+      children: [
+        {
+          path: "login",
+          element: <Login />,
+        },
+      ],
+    },
+    {
+      path: "/about",
+      element: <About />,
+    },
+    {
+      path: "/appointment",
+      element: <Appointment />,
+    },
+    {
+      path: "/dashboard",
+
+      children: [
+        {
+          path: "",
+          element: <Dashboard />,
+        },
+        {
+          path: "appointments",
+          element: <DashboardAppointments />,
+        },
+        {
+          path: "appointment/:id",
+          element: <DashboardAppointment />,
+        },
+        {
+          path: "patients",
+          element: <DashboardPatients />,
+        },
+        {
+          path: "patient/:id",
+          element: <DashboardPatient />,
+        },
+        {
+          path: "settings",
+          element: <DashboardSettings />,
+        },
+      ],
+    },
+  ]);
+
+  return routes;
+};
+
+const AppLayout = () => {
+  const location = useLocation();
+
+  const isDashboardRoute = location.pathname.startsWith("/dashboard");
+
+  return (
+    <div className="min-h-screen bg-background">
+      {!isDashboardRoute ? <Navbar /> : <DashboardNavbar />}
+
+      <div className={isDashboardRoute ? "pt-20 lg:ml-64" : ""}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AppRoutes />
+        </Suspense>
+      </div>
+
+      {!isDashboardRoute && <Footer />}
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppLayout />
+    </BrowserRouter>
+  );
+};
+
+export default App;

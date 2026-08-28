@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+@import "shadcn/tailwind.css";
+
+@import "@fontsource-variable/geist";
+
+@theme inline {
+  /* Deep warm brown — primary text and CTA */
+  --color-primary: #4a3f35;
+
+  /* Soft beige page background */
+  --color-background: #f6f0e6;
+
+  /* Slightly lighter card/surface */
+  --color-surface: #fffaf3;
+
+  /* Muted terracotta — accents and interactive details */
+  --color-accent: #b9785d;
+
+  /* Warm sand — highlights, badges, button shadows */
+  --color-highlight: #e7cfad;
+
+  /* Soft taupe border */
+  --color-border: #ddd0bf;
+}
+
+@layer base {
+  body {
+    @apply bg-background;
+  }
+
+  html {
+    @apply font-sans;
+  }
+}
