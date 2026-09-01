@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { BrowserRouter, useLocation, useRoutes } from "react-router-dom";
 
 import { Navbar } from "@/components/layout/navbar";
-import { DashboardNavbar } from "@/components/layout/dashboard-navigation";
+import { DashboardNavbar } from "@/components/layout/dashboard-navbar";
 import { Footer } from "@/components/layout/footer";
 
 import Home from "@/pages/home";

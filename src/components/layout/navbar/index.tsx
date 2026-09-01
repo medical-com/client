@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { UserProfile } from "@/components/user-profile";
+import { useMe } from "@/pages/auth/hooks";
 import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const { data: account } = useMe();
 
   return (
     <header
@@ -52,21 +55,25 @@ export const Navbar = () => {
       </nav>
 
       {/* Auth */}
-      <div className="flex h-full items-center gap-2 sm:gap-4">
-        <Button
-          size="lg"
-          variant="ghost"
-          onClick={() => navigate("/auth/login")}
-        >
-          Login
-        </Button>
+      {account ? (
+        <UserProfile />
+      ) : (
+        <div className="flex h-full items-center gap-2 sm:gap-4">
+          <Button
+            size="lg"
+            variant="ghost"
+            onClick={() => navigate("/auth/login")}
+          >
+            Login
+          </Button>
 
-        <span className="text-primary/20">|</span>
+          <span className="text-primary/20">|</span>
 
-        <Button size="lg" onClick={() => navigate("/auth/register")}>
-          Register
-        </Button>
-      </div>
+          <Button size="lg" onClick={() => navigate("/auth/register")}>
+            Register
+          </Button>
+        </div>
+      )}
     </header>
   );
 };
