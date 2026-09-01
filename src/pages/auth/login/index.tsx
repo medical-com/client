@@ -1,14 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginSchema, type LoginFormValues } from "./types";
-import { useAuth } from "../hooks";
+import { useAuth, useMe } from "../hooks";
 
 const Login = () => {
-  const { login } = useAuth();
+  const location = useLocation();
+
+  const { data: account, isLoading: isLoadingMe } = useMe();
+  const { login, isLoggingIn, loginError } = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -19,9 +23,14 @@ const Login = () => {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    await login(values);
-    console.log(values);
+    try {
+      await login(values);
+    } catch {
+      // loginError already reflects the failure.
+    }
   };
+
+  if (!isLoadingMe && account) return <Navigate to="/dashboard" replace />;
 
   return (
     <section className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -33,6 +42,12 @@ const Login = () => {
             Enter your credentials to continue
           </p>
         </div>
+
+        {location.state?.registered && (
+          <p className="mb-5 rounded-md bg-accent/10 px-3 py-2 text-center text-sm text-accent">
+            Account created. Please sign in.
+          </p>
+        )}
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <Controller
@@ -81,14 +96,28 @@ const Login = () => {
             )}
           />
 
+          {loginError && (
+            <p className="text-sm text-destructive">{loginError.message}</p>
+          )}
+
           <Button
             type="submit"
             className="w-full"
-            disabled={form.formState.isSubmitting}
+            disabled={isLoggingIn || form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Signing in..." : "Login"}
+            {isLoggingIn ? "Signing in..." : "Login"}
           </Button>
         </form>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link
+            to="/auth/register"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </section>
   );

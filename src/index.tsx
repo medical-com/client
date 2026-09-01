@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import Home from "@/pages/home";
 import About from "@/pages/about";
 import Login from "@/pages/auth/login";
+import Register from "@/pages/auth/register";
 import Appointment from "@/pages/appointment";
 
 // Dashboard pages
@@ -30,6 +31,10 @@ const AppRoutes = () => {
         {
           path: "login",
           element: <Login />,
+        },
+        {
+          path: "register",
+          element: <Register />,
         },
       ],
     },
