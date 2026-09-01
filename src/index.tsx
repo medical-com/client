@@ -10,6 +10,7 @@ import About from "@/pages/about";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Appointment from "@/pages/appointment";
+import { RequireAuth } from "@/components/auth/require-auth";
 
 // Dashboard pages
 import Dashboard from "@/pages/dashboard";
@@ -48,6 +49,7 @@ const AppRoutes = () => {
     },
     {
       path: "/dashboard",
+      element: <RequireAuth />,
 
       children: [
         {
