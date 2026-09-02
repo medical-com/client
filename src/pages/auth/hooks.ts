@@ -1,60 +1,51 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import type { LoginPayload, RegisterPayload } from "./types";
+import { ApiError, request } from "@/lib/api";
+import type { Account } from "@/types/account.type";
+
+export function useMe() {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      try {
+        const { account } = await request<{ account: Account }>("/auth/me");
+        return account;
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) return null;
+        throw error;
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
+}
 
 export function useAuth() {
   const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const res = await fetch("/api/auth/login", {
+    mutationFn: (data: LoginPayload) =>
+      request<{ account: Account }>("/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(data),
-      });
+      }),
 
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
-
-      return res.json();
-    },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["me"],
-      });
+    onSuccess: ({ account }) => {
+      queryClient.setQueryData(["me"], account);
     },
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (data: {
-      email: string;
-      password: string;
-      username: string;
-    }) => {
-      const res = await fetch("/api/auth/register", {
+    mutationFn: (data: RegisterPayload) =>
+      request<{ account: Account }>("/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        throw new Error("Register failed");
-      }
-
-      return res.json();
-    },
+      }),
   });
 
   const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-      });
-    },
+    mutationFn: () => request<void>("/auth/logout", { method: "POST" }),
 
     onSuccess: () => {
       queryClient.setQueryData(["me"], null);
@@ -69,5 +60,8 @@ export function useAuth() {
     isLoggingIn: loginMutation.isPending,
     isRegistering: registerMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
+
+    loginError: loginMutation.error as ApiError | null,
+    registerError: registerMutation.error as ApiError | null,
   };
 }

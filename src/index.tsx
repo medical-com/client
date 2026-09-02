@@ -2,13 +2,16 @@ import { Suspense } from "react";
 import { BrowserRouter, useLocation, useRoutes } from "react-router-dom";
 
 import { Navbar } from "@/components/layout/navbar";
-import { DashboardNavbar } from "@/components/layout/dashboard-navigation";
+import { DashboardNavbar } from "@/components/layout/dashboard-navbar";
 import { Footer } from "@/components/layout/footer";
 
 import Home from "@/pages/home";
 import About from "@/pages/about";
 import Login from "@/pages/auth/login";
+import Register from "@/pages/auth/register";
 import Appointment from "@/pages/appointment";
+import Profile from "@/pages/profile";
+import { RequireAuth } from "@/components/auth/require-auth";
 
 // Dashboard pages
 import Dashboard from "@/pages/dashboard";
@@ -31,6 +34,10 @@ const AppRoutes = () => {
           path: "login",
           element: <Login />,
         },
+        {
+          path: "register",
+          element: <Register />,
+        },
       ],
     },
     {
@@ -42,7 +49,19 @@ const AppRoutes = () => {
       element: <Appointment />,
     },
     {
+      path: "/profile",
+      element: <RequireAuth />,
+
+      children: [
+        {
+          path: "",
+          element: <Profile />,
+        },
+      ],
+    },
+    {
       path: "/dashboard",
+      element: <RequireAuth />,
 
       children: [
         {
