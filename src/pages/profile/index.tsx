@@ -26,45 +26,48 @@ const Profile = () => {
     navigate("/auth/login");
   };
 
+  const fields = [
+    { label: "FIRST NAME", value: account.firstName },
+    { label: "LAST NAME", value: account.lastName },
+    { label: "EMAIL", value: account.email },
+    { label: "PHONE", value: account.phone },
+    { label: "DATE OF BIRTH", value: formatDate(account.dateOfBirth) },
+    { label: "PESEL", value: account.pesel },
+    { label: "ROLE", value: roleLabel },
+    {
+      label: "EMAIL VERIFICATION",
+      value: account.emailVerified ? "Verified" : "Not verified",
+      accent: account.emailVerified,
+    },
+    { label: "MEMBER SINCE", value: formatDate(account.createdAt) },
+    { label: "ACCOUNT ID", value: account.id, mono: true },
+  ];
+
   return (
     <div className="bg-background text-primary">
       <main>
         {/* Hero */}
-        <section className="mx-auto max-w-360 px-5 pt-20 pb-16 sm:px-[6vw] lg:pt-28">
-          <p className="mb-5 text-xs font-extrabold tracking-[0.22em] text-accent">
+        <section className="mx-auto max-w-360 px-5 pt-14 pb-10 sm:px-[6vw] lg:pt-16">
+          <p className="mb-3 text-xs font-extrabold tracking-[0.22em] text-accent">
             ACCOUNT
           </p>
 
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-            <h1
-              className="
-                max-w-3xl font-serif text-5xl font-bold
-                leading-[0.98] tracking-[-0.04em]
-                sm:text-6xl lg:text-[82px]
-              "
-            >
-              Your account,
-              <br />
-              <em className="font-normal text-accent">at a glance.</em>
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <h1 className="font-serif text-2xl font-bold tracking-[-0.02em] sm:text-3xl">
+              Your account
             </h1>
 
-            <div className="flex items-center gap-5">
-              <div
-                className="
-                  flex size-20 shrink-0 items-center justify-center
-                  bg-primary font-serif text-2xl font-bold text-background
-                  sm:size-24 sm:text-3xl
-                "
-              >
+            <div className="flex items-center gap-3">
+              <div className="flex size-11 shrink-0 items-center justify-center bg-primary font-serif text-sm font-bold text-background">
                 {initials}
               </div>
 
               <div>
-                <p className="font-serif text-xl font-bold sm:text-2xl">
+                <p className="font-serif text-sm font-bold sm:text-base">
                   {account.firstName} {account.lastName}
                 </p>
 
-                <p className="mt-1 text-sm text-primary/50">{roleLabel}</p>
+                <p className="mt-0.5 text-xs text-primary/50">{roleLabel}</p>
               </div>
             </div>
           </div>
@@ -74,70 +77,46 @@ const Profile = () => {
         <section className="border-y border-primary/10">
           <div
             className="
-              mx-auto grid max-w-360 gap-10
-              px-5 py-16 sm:px-[6vw]
-              sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:py-20
+              mx-auto grid max-w-360 gap-x-8 gap-y-6
+              px-5 py-10 sm:px-[6vw]
+              sm:grid-cols-2 lg:grid-cols-3
             "
           >
-            <div>
-              <p className="text-xs font-extrabold tracking-[0.2em] text-primary/40">
-                EMAIL
-              </p>
+            {fields.map((field) => (
+              <div key={field.label}>
+                <p className="text-[10px] font-extrabold tracking-[0.18em] text-primary/40">
+                  {field.label}
+                </p>
 
-              <p className="mt-3 wrap-break-word font-serif text-2xl font-bold">
-                {account.email}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs font-extrabold tracking-[0.2em] text-primary/40">
-                ROLE
-              </p>
-
-              <p className="mt-3 font-serif text-2xl font-bold">{roleLabel}</p>
-            </div>
-
-            <div>
-              <p className="text-xs font-extrabold tracking-[0.2em] text-primary/40">
-                EMAIL VERIFICATION
-              </p>
-
-              <p
-                className={`
-                  mt-3 font-serif text-2xl font-bold
-                  ${account.emailVerified ? "text-accent" : "text-primary/40"}
-                `}
-              >
-                {account.emailVerified ? "Verified" : "Not verified"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs font-extrabold tracking-[0.2em] text-primary/40">
-                MEMBER SINCE
-              </p>
-
-              <p className="mt-3 font-serif text-2xl font-bold">
-                {formatDate(account.createdAt)}
-              </p>
-            </div>
+                <p
+                  className={`
+                    mt-1.5 wrap-break-word text-sm font-semibold
+                    ${field.mono ? "font-mono text-xs" : ""}
+                    ${field.accent === false ? "text-primary/40" : ""}
+                    ${field.accent === true ? "text-accent" : ""}
+                  `}
+                >
+                  {field.value}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* Dashboard button */}
         {account.role !== AccountRole.PATIENT && (
-          <section className="mx-auto max-w-360 px-5 py-16 sm:px-[6vw] lg:py-20">
+          <section className="mx-auto max-w-360 px-5 py-10 sm:px-[6vw]">
             <button
               type="button"
               onClick={() => navigate("/dashboard")}
               className="
-              bg-primary px-6 py-4
-              font-bold text-background
-              shadow-[5px_5px_0_var(--color-highlight)]
-              transition-all duration-150
-              hover:translate-x-0.5 hover:translate-y-0.5
-              hover:shadow-[3px_3px_0_var(--color-highlight)]
-            "
+                bg-primary px-5 py-3
+                text-sm font-bold text-background
+                shadow-[5px_5px_0_var(--color-highlight)]
+                transition-all duration-150
+                hover:translate-x-0.5 hover:translate-y-0.5
+                hover:shadow-[3px_3px_0_var(--color-highlight)]
+              "
             >
               Go to Dashboard
             </button>
@@ -145,8 +124,8 @@ const Profile = () => {
         )}
 
         {/* Sign out */}
-        <section className="mx-auto max-w-360 px-5 py-16 sm:px-[6vw] lg:py-20">
-          <p className="mb-6 max-w-xl font-serif text-lg leading-[1.7] text-primary/65">
+        <section className="mx-auto max-w-360 px-5 py-10 sm:px-[6vw]">
+          <p className="mb-4 max-w-xl text-sm leading-6 text-primary/65">
             Signing out will end your current session on this device.
           </p>
 
@@ -155,8 +134,8 @@ const Profile = () => {
             onClick={handleSignOut}
             disabled={isLoggingOut}
             className="
-              bg-primary px-6 py-4
-              font-bold text-background
+              bg-primary px-5 py-3
+              text-sm font-bold text-background
               shadow-[5px_5px_0_var(--color-highlight)]
               transition-all duration-150
               hover:translate-x-0.5 hover:translate-y-0.5
