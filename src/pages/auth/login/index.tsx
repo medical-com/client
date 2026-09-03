@@ -1,17 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginSchema, type LoginFormValues } from "./types";
-import { useAuth, useMe } from "../hooks";
+import { useAuth } from "../hooks";
 
 const Login = () => {
   const location = useLocation();
 
-  const { data: account, isLoading: isLoadingMe } = useMe();
   const { login, isLoggingIn, loginError } = useAuth();
 
   const form = useForm<LoginFormValues>({
@@ -29,8 +28,6 @@ const Login = () => {
       // loginError already reflects the failure.
     }
   };
-
-  if (!isLoadingMe && account) return <Navigate to="/dashboard" replace />;
 
   return (
     <section className="flex min-h-screen items-center justify-center bg-background px-4">
