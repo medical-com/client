@@ -9,8 +9,8 @@ export function useMe() {
     queryKey: ["me"],
     queryFn: async () => {
       try {
-        const { account } = await request<{ account: Account }>("/auth/me");
-        return account;
+        const { data } = await request<{ data: Account }>("/auth/me");
+        return data;
       } catch (error) {
         if (error instanceof ApiError && error.status === 401) return null;
         throw error;
@@ -38,7 +38,7 @@ export function useAuth() {
 
   const registerMutation = useMutation({
     mutationFn: (data: RegisterPayload) =>
-      request<{ account: Account }>("/auth/register", {
+      request<{ success: boolean }>("/auth/register", {
         method: "POST",
         body: JSON.stringify(data),
       }),

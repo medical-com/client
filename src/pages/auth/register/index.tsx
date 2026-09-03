@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
@@ -8,11 +9,40 @@ import { Input } from "@/components/ui/input";
 import { registerSchema, type RegisterFormValues } from "./types";
 import { useAuth, useMe } from "../hooks";
 
+const DAYS = Array.from({ length: 31 }, (_, i) =>
+  String(i + 1).padStart(2, "0"),
+);
+
+const MONTHS = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: 100 }, (_, i) =>
+  String(CURRENT_YEAR - i),
+);
+
+const dateSelectClassName =
+  "h-8 w-full min-w-0 border-b bg-transparent px-2.5 py-1 text-base text-foreground transition-colors outline-none focus:border-b-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-b-destructive md:text-sm dark:bg-input/30";
+
 const Register = () => {
   const navigate = useNavigate();
 
   const { data: account, isLoading: isLoadingMe } = useMe();
   const { register, isRegistering, registerError } = useAuth();
+
+  const [dob, setDob] = useState({ day: "", month: "", year: "" });
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -20,6 +50,7 @@ const Register = () => {
       firstName: "",
       lastName: "",
       email: "",
+      pesel: "",
       dateOfBirth: "",
       phoneNumber: "",
       password: "",
@@ -119,17 +150,18 @@ const Register = () => {
           />
 
           <Controller
-            name="dateOfBirth"
+            name="pesel"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Date of birth</FieldLabel>
+                <FieldLabel htmlFor={field.name}>PESEL</FieldLabel>
 
                 <Input
                   {...field}
                   id={field.name}
-                  type="date"
-                  autoComplete="bday"
+                  inputMode="numeric"
+                  maxLength={11}
+                  placeholder="12345678901"
                   aria-invalid={fieldState.invalid}
                 />
 
@@ -138,6 +170,95 @@ const Register = () => {
                 )}
               </Field>
             )}
+          />
+
+          <Controller
+            name="dateOfBirth"
+            control={form.control}
+            render={({ field, fieldState }) => {
+              const update = (next: Partial<typeof dob>) => {
+                const merged = { ...dob, ...next };
+
+                setDob(merged);
+                field.onChange(
+                  merged.day && merged.month && merged.year
+                    ? `${merged.year}-${merged.month}-${merged.day}`
+                    : "",
+                );
+              };
+
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={`${field.name}-day`}>
+                    Date of birth
+                  </FieldLabel>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <select
+                      id={`${field.name}-day`}
+                      value={dob.day}
+                      onChange={(event) =>
+                        update({ day: event.target.value })
+                      }
+                      aria-invalid={fieldState.invalid}
+                      className={dateSelectClassName}
+                    >
+                      <option value="" disabled>
+                        Day
+                      </option>
+
+                      {DAYS.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={dob.month}
+                      onChange={(event) =>
+                        update({ month: event.target.value })
+                      }
+                      aria-invalid={fieldState.invalid}
+                      className={dateSelectClassName}
+                    >
+                      <option value="" disabled>
+                        Month
+                      </option>
+
+                      {MONTHS.map((m) => (
+                        <option key={m.value} value={m.value}>
+                          {m.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={dob.year}
+                      onChange={(event) =>
+                        update({ year: event.target.value })
+                      }
+                      aria-invalid={fieldState.invalid}
+                      className={dateSelectClassName}
+                    >
+                      <option value="" disabled>
+                        Year
+                      </option>
+
+                      {YEARS.map((y) => (
+                        <option key={y} value={y}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              );
+            }}
           />
 
           <Controller

@@ -20,9 +20,11 @@ export const UserProfile = () => {
     navigate("/auth/login");
   };
 
-  const initials = account?.email.slice(0, 2).toUpperCase() ?? "··";
+  const initials = account
+    ? `${account.firstName.charAt(0)}${account.lastName.charAt(0)}`.toUpperCase()
+    : "··";
   const roleLabel = account
-    ? account.group.charAt(0).toUpperCase() + account.group.slice(1)
+    ? account.role.charAt(0).toUpperCase() + account.role.slice(1)
     : "";
 
   return (
@@ -42,7 +44,9 @@ export const UserProfile = () => {
         </Avatar>
 
         <div className="hidden min-w-0 text-left sm:block">
-          <p className="truncate text-sm font-bold">{account?.email}</p>
+          <p className="truncate text-sm font-bold">
+            {account ? `${account.firstName} ${account.lastName}` : ""}
+          </p>
           <p className="truncate text-xs text-primary/50">{roleLabel}</p>
         </div>
 

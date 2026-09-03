@@ -1,23 +1,19 @@
-export enum AccountGroup {
+export enum AccountRole {
   ADMIN = "admin",
   RECEPTIONIST = "receptionist",
   DOCTOR = "doctor",
   PATIENT = "patient",
 }
 
-export enum AccountPermission {
-  READ_ACCOUNTS = "read_accounts",
-  WRITE_ACCOUNTS = "write_accounts",
-
-  ACCESS_DASHBOARD = "access_dashboard",
-}
-
 export type Account = {
   id: string;
-  patientId: string;
+  firstName: string;
+  lastName: string;
+  pesel: string;
   email: string;
   emailVerified: boolean;
-  group: AccountGroup;
-  permissions?: AccountPermission[];
+  phone: string;
+  dateOfBirth: string;
+  role: string;
   createdAt: string;
 };

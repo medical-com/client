@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { useAuth, useMe } from "@/pages/auth/hooks";
-import { hasPermission } from "@/lib/utils";
-import { AccountPermission } from "@/types/account.type";
+import { AccountRole } from "@/types/account.type";
 
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("en-US", {
@@ -18,9 +17,9 @@ const Profile = () => {
 
   if (!account) return null;
 
-  const initials = account.email.slice(0, 2).toUpperCase();
+  const initials = `${account.firstName.charAt(0)}${account.lastName.charAt(0)}`.toUpperCase();
   const roleLabel =
-    account.group.charAt(0).toUpperCase() + account.group.slice(1);
+    account.role.charAt(0).toUpperCase() + account.role.slice(1);
 
   const handleSignOut = async () => {
     await logout();
@@ -62,7 +61,7 @@ const Profile = () => {
 
               <div>
                 <p className="font-serif text-xl font-bold sm:text-2xl">
-                  {account.email}
+                  {account.firstName} {account.lastName}
                 </p>
 
                 <p className="mt-1 text-sm text-primary/50">{roleLabel}</p>
@@ -126,7 +125,7 @@ const Profile = () => {
         </section>
 
         {/* Dashboard button */}
-        {hasPermission(account, AccountPermission.ACCESS_DASHBOARD) && (
+        {account.role !== AccountRole.PATIENT && (
           <section className="mx-auto max-w-360 px-5 py-16 sm:px-[6vw] lg:py-20">
             <button
               type="button"
