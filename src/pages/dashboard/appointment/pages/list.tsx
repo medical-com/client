@@ -9,8 +9,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AppointmentCard } from "./components/appointment-card";
-import { days, hours } from "./constants";
+import { AppointmentCard } from "../components/appointment-card";
+import { days, hours } from "../constants";
 
 const DashboardAppointments = () => {
   return (

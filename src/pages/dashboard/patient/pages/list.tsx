@@ -2,9 +2,9 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
-import { PatientRow } from "./components/patient-row";
-import { patients, searchFieldOptions } from "./constants";
-import type { SearchField } from "./types";
+import { PatientRow } from "../components/patient-row";
+import { patients, searchFieldOptions } from "../constants";
+import type { SearchField } from "../types";
 
 const DashboardPatients = () => {
   const [search, setSearch] = useState("");

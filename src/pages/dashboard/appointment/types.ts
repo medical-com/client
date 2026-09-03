@@ -1,3 +1,22 @@
+export type Appointment = {
+  id: number;
+  time: string;
+  patient: string;
+  type: string;
+  duration: number;
+};
+
+export type Day = {
+  name: string;
+  date: number;
+  appointments: Appointment[];
+};
+
+export type AppointmentCardProps = {
+  appointment: Appointment;
+  top: number;
+};
+
 export type Patient = {
   name: string;
   dateOfBirth: string;
@@ -5,7 +24,7 @@ export type Patient = {
   email: string;
 };
 
-export type Appointment = {
+export type AppointmentDetail = {
   id?: string;
   time: string;
   date: string;

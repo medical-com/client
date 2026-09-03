@@ -4,6 +4,7 @@ import { BrowserRouter, useLocation, useRoutes } from "react-router-dom";
 import { Navbar } from "@/components/layout/navbar";
 import { DashboardNavbar } from "@/components/layout/dashboard-navbar";
 import { Footer } from "@/components/layout/footer";
+import { RequireAuth } from "@/components/auth/require-auth";
 
 import Home from "@/pages/home";
 import About from "@/pages/about";
@@ -11,14 +12,13 @@ import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Appointment from "@/pages/appointment";
 import Profile from "@/pages/profile";
-import { RequireAuth } from "@/components/auth/require-auth";
 
 // Dashboard pages
 import Dashboard from "@/pages/dashboard";
-import DashboardAppointments from "@/pages/dashboard/appointments";
-import DashboardAppointment from "@/pages/dashboard/appointment";
-import DashboardPatients from "@/pages/dashboard/patients";
-import DashboardPatient from "@/pages/dashboard/patient";
+import DashboardAppointments from "@/pages/dashboard/appointment/pages/list";
+import DashboardAppointment from "@/pages/dashboard/appointment/pages/detail";
+import DashboardPatients from "@/pages/dashboard/patient/pages/list";
+import DashboardPatient from "@/pages/dashboard/patient/pages/detail";
 import DashboardSettings from "@/pages/dashboard/settings";
 
 const AppRoutes = () => {

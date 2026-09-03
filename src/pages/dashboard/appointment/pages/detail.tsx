@@ -1,18 +1,26 @@
-import { ArrowLeft, CalendarDays, Mail, MapPin, Phone } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Clock,
+  Mail,
+  Phone,
+  User,
+} from "lucide-react";
+
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Separator } from "@/components/ui/separator";
-import { AppointmentItem } from "./components/appointment-item";
-import { ContactField } from "./components/contact-field";
-import { InfoCard } from "./components/info-card";
-import { StatusBadge } from "./components/status-badge";
-import { getMockPatient } from "./constants";
+import { InfoCard } from "../components/info-card";
+import { PatientField } from "../components/patient-field";
+import { StatusBadge } from "../components/status-badge";
+import { StatusButton } from "../components/status-button";
+import { getMockAppointment, statusOptions } from "../constants";
 
-const DashboardPatient = () => {
+const DashboardAppointment = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const patient = getMockPatient(id);
+  const appointment = getMockAppointment(id);
 
   return (
     <div className="min-h-screen bg-background text-primary">
@@ -20,7 +28,7 @@ const DashboardPatient = () => {
         {/* Back */}
         <button
           type="button"
-          onClick={() => navigate("/dashboard/patients")}
+          onClick={() => navigate("/dashboard/appointments")}
           className="
             mb-8 flex items-center gap-2
             text-xs font-bold text-primary/50
@@ -29,83 +37,80 @@ const DashboardPatient = () => {
           "
         >
           <ArrowLeft className="size-4" />
-          Back to patients
+          Back to appointments
         </button>
 
         {/* Header */}
         <section className="mb-10">
           <p className="mb-4 text-xs font-extrabold tracking-[0.22em] text-accent">
-            PATIENT
+            APPOINTMENT
           </p>
 
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
               <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-                {patient.name}
+                {appointment.patient.name}
               </h1>
 
               <p className="mt-3 font-serif text-lg text-primary/60">
-                {patient.age} years old · {patient.dateOfBirth}
+                {appointment.type}
               </p>
             </div>
 
-            <StatusBadge status={patient.status} />
+            <StatusBadge status={appointment.status} />
           </div>
         </section>
 
-        {/* Patient information */}
+        {/* Appointment information */}
         <section className="mb-10 grid gap-px overflow-hidden rounded-[5px] bg-primary/10 sm:grid-cols-3">
           <InfoCard
-            icon={<Phone className="size-5" />}
-            label="PHONE"
-            value={patient.phone}
-          />
-
-          <InfoCard
-            icon={<Mail className="size-5" />}
-            label="EMAIL"
-            value={patient.email}
-          />
-
-          <InfoCard
             icon={<CalendarDays className="size-5" />}
-            label="LAST VISIT"
-            value={patient.lastVisit}
+            label="DATE"
+            value={appointment.date}
+          />
+
+          <InfoCard
+            icon={<Clock className="size-5" />}
+            label="TIME"
+            value={`${appointment.time} · ${appointment.duration}`}
+          />
+
+          <InfoCard
+            icon={<User className="size-5" />}
+            label="DOCTOR"
+            value={appointment.doctor}
           />
         </section>
 
         {/* Content */}
         <section className="grid gap-10 lg:grid-cols-[1.4fr_0.8fr]">
-          {/* Contact */}
+          {/* Patient */}
           <div className="border-t border-primary/10 pt-6">
             <p className="mb-6 text-xs font-extrabold tracking-[0.2em] text-accent">
-              CONTACT INFORMATION
+              PATIENT INFORMATION
             </p>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              <ContactField label="Full name" value={patient.name} />
-
-              <ContactField
-                label="Date of birth"
-                value={patient.dateOfBirth}
+              <PatientField
+                label="Full name"
+                value={appointment.patient.name}
               />
 
-              <ContactField
+              <PatientField
+                label="Date of birth"
+                value={appointment.patient.dateOfBirth}
+              />
+
+              <PatientField
                 label="Phone"
-                value={patient.phone}
+                value={appointment.patient.phone}
                 icon={<Phone className="size-4" />}
               />
 
-              <ContactField
+              <PatientField
                 label="Email"
-                value={patient.email}
+                value={appointment.patient.email}
                 icon={<Mail className="size-4" />}
-              />
-
-              <ContactField
-                label="Address"
-                value={patient.address}
-                icon={<MapPin className="size-4" />}
               />
             </div>
 
@@ -113,25 +118,40 @@ const DashboardPatient = () => {
 
             <div>
               <p className="mb-3 text-xs font-bold text-primary/45">
-                MEDICAL NOTES
+                APPOINTMENT NOTES
               </p>
 
               <p className="font-serif text-base leading-7 text-primary/70">
-                {patient.notes}
+                {appointment.notes}
               </p>
             </div>
           </div>
 
-          {/* Appointments */}
+          {/* Status */}
           <div className="border-t border-primary/10 pt-6">
             <p className="mb-6 text-xs font-extrabold tracking-[0.2em] text-accent">
-              RECENT APPOINTMENTS
+              APPOINTMENT STATUS
             </p>
 
-            <div className="grid gap-3">
-              {patient.appointments.map((appointment) => (
-                <AppointmentItem key={appointment.id} appointment={appointment} />
-              ))}
+            <div className="rounded-[5px] border border-primary/10 p-6">
+              <p className="font-serif text-xl font-bold">
+                {appointment.status}
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-primary/50">
+                Update the appointment status as the patient progresses through
+                their visit.
+              </p>
+
+              <div className="mt-6 grid gap-2">
+                {statusOptions.map((status) => (
+                  <StatusButton
+                    key={status}
+                    status={status}
+                    active={appointment.status}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -140,4 +160,4 @@ const DashboardPatient = () => {
   );
 };
 
-export default DashboardPatient;
+export default DashboardAppointment;
