@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { LoginPayload, RegisterPayload } from "./types";
+import type {
+  ConfirmEmailPayload,
+  LoginPayload,
+  RegisterPayload,
+} from "./types";
 import { ApiError, request } from "@/lib/api";
 import type { Account } from "@/types/account.type";
 
@@ -52,16 +56,27 @@ export function useAuth() {
     },
   });
 
+  const confirmEmailMutation = useMutation({
+    mutationFn: (data: ConfirmEmailPayload) =>
+      request<{ success: boolean }>("/auth/confirm-email", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  });
+
   return {
     login: loginMutation.mutateAsync,
     register: registerMutation.mutateAsync,
     logout: logoutMutation.mutateAsync,
+    confirmEmail: confirmEmailMutation.mutateAsync,
 
     isLoggingIn: loginMutation.isPending,
     isRegistering: registerMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
+    isConfirmingEmail: confirmEmailMutation.isPending,
 
     loginError: loginMutation.error as ApiError | null,
     registerError: registerMutation.error as ApiError | null,
+    confirmEmailError: confirmEmailMutation.error as ApiError | null,
   };
 }

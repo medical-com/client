@@ -12,3 +12,7 @@ export type RegisterPayload = {
   phoneNumber: string;
   password: string;
 };
+
+export type ConfirmEmailPayload = {
+  token: string;
+};

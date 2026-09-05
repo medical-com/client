@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -10,6 +10,7 @@ import { useAuth } from "../hooks";
 
 const Login = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { login, isLoggingIn, loginError } = useAuth();
 
@@ -24,6 +25,7 @@ const Login = () => {
   const onSubmit = async (values: LoginFormValues) => {
     try {
       await login(values);
+      navigate("/profile");
     } catch {
       // loginError already reflects the failure.
     }
@@ -40,9 +42,9 @@ const Login = () => {
           </p>
         </div>
 
-        {location.state?.registered && (
+        {location.state?.verified && (
           <p className="mb-5 rounded-md bg-accent/10 px-3 py-2 text-center text-sm text-accent">
-            Account created. Please sign in.
+            Email verified. Please sign in.
           </p>
         )}
 
@@ -94,7 +96,20 @@ const Login = () => {
           />
 
           {loginError && (
-            <p className="text-sm text-destructive">{loginError.message}</p>
+            <p className="text-sm text-destructive">
+              {loginError.message}
+              {loginError.status === 403 && (
+                <>
+                  {" "}
+                  <Link
+                    to="/auth/verify-email"
+                    className="font-medium underline-offset-4 hover:underline"
+                  >
+                    Verify your email
+                  </Link>
+                </>
+              )}
+            </p>
           )}
 
           <Button
