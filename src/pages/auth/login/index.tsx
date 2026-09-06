@@ -48,6 +48,12 @@ const Login = () => {
           </p>
         )}
 
+        {location.state?.passwordReset && (
+          <p className="mb-5 rounded-md bg-accent/10 px-3 py-2 text-center text-sm text-accent">
+            Password reset. Please sign in.
+          </p>
+        )}
+
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <Controller
             name="email"
@@ -77,7 +83,16 @@ const Login = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <div className="flex items-center justify-between">
+                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+
+                  <Link
+                    to="/auth/forgot-password"
+                    className="text-xs font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
 
                 <Input
                   {...field}
