@@ -15,7 +15,7 @@ export function useMe() {
     queryKey: ["me"],
     queryFn: async () => {
       try {
-        const { data } = await request<{ data: Account }>("/auth/me");
+        const { data } = await request<{ data: Account | null }>("/auth/me");
         return data;
       } catch (error) {
         if (error instanceof ApiError && error.status === 401) return null;
@@ -32,13 +32,13 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginPayload) =>
-      request<{ account: Account }>("/auth/login", {
+      request<{ clientAccount: Account }>("/auth/login", {
         method: "POST",
         body: JSON.stringify(data),
       }),
 
-    onSuccess: ({ account }) => {
-      queryClient.setQueryData(["me"], account);
+    onSuccess: ({ clientAccount }) => {
+      queryClient.setQueryData(["me"], clientAccount);
     },
   });
 

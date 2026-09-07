@@ -25,7 +25,7 @@ const Login = () => {
   const onSubmit = async (values: LoginFormValues) => {
     try {
       await login(values);
-      navigate("/profile");
+      navigate("/");
     } catch {
       // loginError already reflects the failure.
     }
