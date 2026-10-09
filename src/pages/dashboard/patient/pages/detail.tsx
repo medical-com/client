@@ -1,18 +1,53 @@
-import { ArrowLeft, CalendarDays, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, CalendarDays, Mail, Phone } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Separator } from "@/components/ui/separator";
-import { AppointmentItem } from "../components/appointment-item";
 import { ContactField } from "../components/contact-field";
 import { InfoCard } from "../components/info-card";
-import { StatusBadge } from "../components/status-badge";
-import { getMockPatient } from "../constants";
+import { useFindOnePatientQuery } from "../hooks";
+
+const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+const getAge = (value: string) => {
+  const birthDate = new Date(value);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const birthdayHasNotPassed =
+    today.getMonth() < birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() &&
+      today.getDate() < birthDate.getDate());
+
+  if (birthdayHasNotPassed) age -= 1;
+
+  return age;
+};
 
 const DashboardPatient = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { data: patient, isLoading, error } = useFindOnePatientQuery(id);
 
-  const patient = getMockPatient(id);
+  if (isLoading) {
+    return (
+      <PageMessage message="Loading patient..." onBack={() => navigate("/dashboard/patients")} />
+    );
+  }
+
+  if (error || !patient) {
+    return (
+      <PageMessage
+        message="Failed to load patient."
+        onBack={() => navigate("/dashboard/patients")}
+      />
+    );
+  }
+
+  const fullName = `${patient.firstName} ${patient.lastName}`.trim();
+  const dateOfBirth = formatDate(patient.dateOfBirth);
 
   return (
     <div className="min-h-screen bg-background text-primary">
@@ -40,16 +75,12 @@ const DashboardPatient = () => {
 
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
-              <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-                {patient.name}
-              </h1>
+              <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">{fullName}</h1>
 
               <p className="mt-3 font-serif text-lg text-primary/60">
-                {patient.age} years old · {patient.dateOfBirth}
+                {getAge(patient.dateOfBirth)} years old · {dateOfBirth}
               </p>
             </div>
-
-            <StatusBadge status={patient.status} />
           </div>
         </section>
 
@@ -69,8 +100,8 @@ const DashboardPatient = () => {
 
           <InfoCard
             icon={<CalendarDays className="size-5" />}
-            label="LAST VISIT"
-            value={patient.lastVisit}
+            label="DATE OF BIRTH"
+            value={dateOfBirth}
           />
         </section>
 
@@ -83,12 +114,9 @@ const DashboardPatient = () => {
             </p>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              <ContactField label="Full name" value={patient.name} />
+              <ContactField label="Full name" value={fullName} />
 
-              <ContactField
-                label="Date of birth"
-                value={patient.dateOfBirth}
-              />
+              <ContactField label="Date of birth" value={dateOfBirth} />
 
               <ContactField
                 label="Phone"
@@ -102,36 +130,7 @@ const DashboardPatient = () => {
                 icon={<Mail className="size-4" />}
               />
 
-              <ContactField
-                label="Address"
-                value={patient.address}
-                icon={<MapPin className="size-4" />}
-              />
-            </div>
-
-            <Separator className="my-8 bg-primary/10" />
-
-            <div>
-              <p className="mb-3 text-xs font-bold text-primary/45">
-                MEDICAL NOTES
-              </p>
-
-              <p className="font-serif text-base leading-7 text-primary/70">
-                {patient.notes}
-              </p>
-            </div>
-          </div>
-
-          {/* Appointments */}
-          <div className="border-t border-primary/10 pt-6">
-            <p className="mb-6 text-xs font-extrabold tracking-[0.2em] text-accent">
-              RECENT APPOINTMENTS
-            </p>
-
-            <div className="grid gap-3">
-              {patient.appointments.map((appointment) => (
-                <AppointmentItem key={appointment.id} appointment={appointment} />
-              ))}
+              <ContactField label="PESEL" value={patient.pesel} />
             </div>
           </div>
         </section>
@@ -139,5 +138,25 @@ const DashboardPatient = () => {
     </div>
   );
 };
+
+const PageMessage = ({
+  message,
+  onBack,
+}: {
+  message: string;
+  onBack: () => void;
+}) => (
+  <div className="min-h-screen bg-background px-5 py-10 text-primary">
+    <button
+      type="button"
+      onClick={onBack}
+      className="flex items-center gap-2 text-xs font-bold text-primary/50 transition-colors hover:text-primary"
+    >
+      <ArrowLeft className="size-4" />
+      Back to patients
+    </button>
+    <p className="mt-10 text-center text-sm text-primary/50">{message}</p>
+  </div>
+);
 
 export default DashboardPatient;

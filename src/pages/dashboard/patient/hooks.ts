@@ -13,7 +13,22 @@ export type ClientPatientListItem = {
   dateOfBirth: string;
 };
 
+export type ClientPatient = ClientPatientListItem;
+
 export type PatientListQueryResponse = WithPagination<ClientPatientListItem>;
+
+export function useFindOnePatientQuery(id?: string) {
+  return useQuery({
+    queryKey: ["dashboard", "patient", "find-one", id],
+    queryFn: () =>
+      request<ClientPatient>(
+        `/dashboard/patient/find-one?id=${encodeURIComponent(id!)}`,
+        { method: "GET" },
+      ),
+    enabled: Boolean(id),
+    retry: false,
+  });
+}
 
 export function useListPatientQuery(
   searchField: "name" | "email" | "phone",

@@ -17,7 +17,7 @@ const DashboardPatients = () => {
   )!.label;
 
   const patients = (data?.data ?? []).map((patient) => ({
-    id: Number(patient.id),
+    id: patient.id,
     name: `${patient.firstName} ${patient.lastName}`.trim(),
     email: patient.email,
     phone: patient.phone,
