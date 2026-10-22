@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError, request } from "@/lib/api";
 import type { WithPagination } from "@/types/pagination.type";
@@ -16,6 +16,16 @@ export type ClientPatientListItem = {
 export type ClientPatient = ClientPatientListItem;
 
 export type PatientListQueryResponse = WithPagination<ClientPatientListItem>;
+
+export type UpdatePatientPayload = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  pesel: string;
+};
 
 export function useFindOnePatientQuery(id?: string) {
   return useQuery({
@@ -82,5 +92,26 @@ export function useListPatientQuery(
     },
     staleTime: 5 * 60 * 1000,
     retry: false,
+  });
+}
+
+export function useUpdatePatientMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdatePatientPayload) =>
+      request<ClientPatient>("/dashboard/patient/update", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: (patient) => {
+      queryClient.setQueryData(
+        ["dashboard", "patient", "find-one", patient.id],
+        patient,
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "patient", "list"],
+      });
+    },
   });
 }

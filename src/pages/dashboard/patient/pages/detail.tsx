@@ -1,9 +1,16 @@
-import { ArrowLeft, CalendarDays, Mail, Phone } from "lucide-react";
+import { ArrowLeft, CalendarDays, Mail, Pencil, Phone } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { ContactField } from "../components/contact-field";
 import { InfoCard } from "../components/info-card";
-import { useFindOnePatientQuery } from "../hooks";
+import { PatientEditForm } from "../components/patient-edit-form";
+import {
+  useFindOnePatientQuery,
+  useUpdatePatientMutation,
+  type ClientPatient,
+} from "../hooks";
 
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("en-US", {
@@ -29,7 +36,12 @@ const getAge = (value: string) => {
 const DashboardPatient = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: patient, isLoading, error } = useFindOnePatientQuery(id);
+  const { data, isLoading, error } = useFindOnePatientQuery(id);
+  const updatePatientMutation = useUpdatePatientMutation();
+  const [editedPatient, setEditedPatient] = useState<ClientPatient>();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const patient = editedPatient ?? data;
 
   if (isLoading) {
     return (
@@ -81,6 +93,16 @@ const DashboardPatient = () => {
                 {getAge(patient.dateOfBirth)} years old · {dateOfBirth}
               </p>
             </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditOpen(true)}
+              className="rounded-[5px] border-primary/10"
+            >
+              <Pencil />
+              Edit patient
+            </Button>
           </div>
         </section>
 
@@ -134,6 +156,36 @@ const DashboardPatient = () => {
             </div>
           </div>
         </section>
+
+        <PatientEditForm
+          patient={patient}
+          open={isEditOpen}
+          onOpenChange={setIsEditOpen}
+          isSaving={updatePatientMutation.isPending}
+          error={
+            updatePatientMutation.error instanceof Error
+              ? updatePatientMutation.error.message
+              : undefined
+          }
+          onSave={async (formValues) => {
+            try {
+              const updatedPatient =
+                await updatePatientMutation.mutateAsync({
+                  id: patient.id,
+                  firstName: formValues.firstName,
+                  lastName: formValues.lastName,
+                  email: formValues.email,
+                  phoneNumber: formValues.phone,
+                  dateOfBirth: formValues.dateOfBirth,
+                  pesel: formValues.pesel,
+                });
+              setEditedPatient(updatedPatient);
+              return true;
+            } catch {
+              return false;
+            }
+          }}
+        />
       </main>
     </div>
   );
