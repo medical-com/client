@@ -1,17 +1,26 @@
 import {
   ArrowLeft,
   Mail,
+  Pencil,
   Phone,
   ShieldCheck,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
-import { useFindOneDoctorQuery } from "../hooks";
+import { Button } from "@/components/ui/button";
+import { DoctorEditForm } from "../components/doctor-edit-form";
+import {
+  useFindOneDoctorQuery,
+  useUpdateDoctorMutation,
+} from "../hooks";
 
 const DashboardDoctor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data: doctor, isLoading, error } = useFindOneDoctorQuery(id);
+  const updateDoctorMutation = useUpdateDoctorMutation();
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   if (isLoading) {
     return <PageMessage message="Loading doctor..." onBack={() => navigate("/dashboard/doctors")} />;
@@ -59,6 +68,15 @@ const DashboardDoctor = () => {
                 {doctor.specialization}
               </p>
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditOpen(true)}
+              className="rounded-[5px] border-primary/10"
+            >
+              <Pencil />
+              Edit doctor
+            </Button>
           </div>
         </section>
 
@@ -120,6 +138,36 @@ const DashboardDoctor = () => {
             </div>
           </div>
         </section>
+
+        <DoctorEditForm
+          doctor={doctor}
+          open={isEditOpen}
+          onOpenChange={setIsEditOpen}
+          isSaving={updateDoctorMutation.isPending}
+          error={
+            updateDoctorMutation.error instanceof Error
+              ? updateDoctorMutation.error.message
+              : undefined
+          }
+          onSave={async (formValues) => {
+            try {
+              await updateDoctorMutation.mutateAsync({
+                id: doctor.id,
+                firstName: formValues.firstName,
+                lastName: formValues.lastName,
+                email: formValues.email,
+                phoneNumber: formValues.phone,
+                dateOfBirth: formValues.dateOfBirth,
+                pesel: formValues.pesel,
+                licenseNumber: formValues.licenseNumber,
+                specialization: formValues.specialization,
+              });
+              return true;
+            } catch {
+              return false;
+            }
+          }}
+        />
       </main>
     </div>
   );

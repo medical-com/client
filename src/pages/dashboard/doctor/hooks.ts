@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { request } from "@/lib/api";
 
@@ -23,6 +23,18 @@ export type DoctorListResponse = {
     totalPages: number;
     hasNextPage: boolean;
   };
+};
+
+export type UpdateDoctorPayload = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  pesel: string;
+  licenseNumber: string;
+  specialization: string;
 };
 
 export function useFindOneDoctorQuery(id?: string) {
@@ -59,5 +71,26 @@ export function useListDoctorQuery(search: string) {
     },
     staleTime: 5 * 60 * 1000,
     retry: false,
+  });
+}
+
+export function useUpdateDoctorMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateDoctorPayload) =>
+      request<ClientDoctor>("/dashboard/doctor/update", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: (doctor) => {
+      queryClient.setQueryData(
+        ["dashboard", "doctor", "find-one", doctor.id],
+        doctor,
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "doctor", "list"],
+      });
+    },
   });
 }
