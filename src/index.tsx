@@ -22,6 +22,8 @@ import DashboardAppointments from "@/pages/dashboard/appointment/pages/list";
 import DashboardAppointment from "@/pages/dashboard/appointment/pages/detail";
 import DashboardPatients from "@/pages/dashboard/patient/pages/list";
 import DashboardPatient from "@/pages/dashboard/patient/pages/detail";
+import DashboardDoctor from "@/pages/dashboard/doctor/pages/detail";
+import DashboardDoctors from "@/pages/dashboard/doctor/pages/list";
 import DashboardSettings from "@/pages/dashboard/settings";
 
 const AppRoutes = () => {
@@ -98,6 +100,14 @@ const AppRoutes = () => {
         {
           path: "patient/:id",
           element: <DashboardPatient />,
+        },
+        {
+          path: "doctors",
+          element: <DashboardDoctors />,
+        },
+        {
+          path: "doctor/:id",
+          element: <DashboardDoctor />,
         },
         {
           path: "settings",

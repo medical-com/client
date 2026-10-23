@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   Menu,
   Settings,
+  Stethoscope,
   Users,
 } from "lucide-react";
 import {
@@ -31,6 +32,11 @@ const navigation = [
     label: "Patients",
     href: "/dashboard/patients",
     icon: Users,
+  },
+  {
+    label: "Doctors",
+    href: "/dashboard/doctors",
+    icon: Stethoscope,
   },
 ];
 
