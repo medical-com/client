@@ -60,7 +60,7 @@ const Register = () => {
   const onSubmit = async (values: RegisterFormValues) => {
     try {
       await register(values);
-      navigate("/auth/login", { state: { registered: true } });
+      navigate("/auth/verify-email");
     } catch {
       // registerError already reflects the failure.
     }

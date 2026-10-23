@@ -1,5 +1,5 @@
 export type Patient = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -21,18 +21,8 @@ export type PatientAppointment = {
   status: string;
 };
 
-export type PatientDetail = {
-  id?: string;
-  name: string;
-  dateOfBirth: string;
-  age: number;
-  phone: string;
-  email: string;
-  address: string;
-  status: string;
-  lastVisit: string;
-  notes: string;
-  appointments: PatientAppointment[];
+export type AppointmentItemProps = {
+  appointment: PatientAppointment;
 };
 
 export type InfoCardProps = {
@@ -45,8 +35,4 @@ export type ContactFieldProps = {
   label: string;
   value: string;
   icon?: React.ReactNode;
-};
-
-export type AppointmentItemProps = {
-  appointment: PatientAppointment;
 };

@@ -12,3 +12,16 @@ export type RegisterPayload = {
   phoneNumber: string;
   password: string;
 };
+
+export type ConfirmEmailPayload = {
+  token: string;
+};
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordPayload = {
+  token: string;
+  password: string;
+};

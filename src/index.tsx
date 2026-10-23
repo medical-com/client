@@ -10,6 +10,9 @@ import Home from "@/pages/home";
 import About from "@/pages/about";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
+import VerifyEmail from "@/pages/auth/verify-email";
+import ForgotPassword from "@/pages/auth/forgot-password";
+import ResetPassword from "@/pages/auth/reset-password";
 import Appointment from "@/pages/appointment";
 import Profile from "@/pages/profile";
 
@@ -37,6 +40,18 @@ const AppRoutes = () => {
         {
           path: "register",
           element: <Register />,
+        },
+        {
+          path: "verify-email",
+          element: <VerifyEmail />,
+        },
+        {
+          path: "forgot-password",
+          element: <ForgotPassword />,
+        },
+        {
+          path: "reset-password",
+          element: <ResetPassword />,
         },
       ],
     },
