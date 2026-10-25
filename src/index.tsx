@@ -11,6 +11,7 @@ import About from "@/pages/about";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import VerifyEmail from "@/pages/auth/verify-email";
+import ConfirmDoctorInvitation from "@/pages/auth/confirm-doctor";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
 import Appointment from "@/pages/appointment";
@@ -47,6 +48,10 @@ const AppRoutes = () => {
         {
           path: "verify-email",
           element: <VerifyEmail />,
+        },
+        {
+          path: "confirm-doctor",
+          element: <ConfirmDoctorInvitation />,
         },
         {
           path: "forgot-password",

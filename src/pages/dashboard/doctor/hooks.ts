@@ -37,6 +37,8 @@ export type UpdateDoctorPayload = {
   specialization: string;
 };
 
+export type CreateDoctorPayload = Omit<UpdateDoctorPayload, "id">;
+
 export function useFindOneDoctorQuery(id?: string) {
   return useQuery({
     queryKey: ["dashboard", "doctor", "find-one", id],
@@ -92,5 +94,15 @@ export function useUpdateDoctorMutation() {
         queryKey: ["dashboard", "doctor", "list"],
       });
     },
+  });
+}
+
+export function useCreateDoctorMutation() {
+  return useMutation({
+    mutationFn: (data: CreateDoctorPayload) =>
+      request<{ success: boolean }>("/dashboard/doctor/create", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
   });
 }
