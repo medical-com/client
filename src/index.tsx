@@ -11,6 +11,7 @@ import About from "@/pages/about";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import VerifyEmail from "@/pages/auth/verify-email";
+import ConfirmDoctorInvitation from "@/pages/auth/confirm-doctor";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
 import Appointment from "@/pages/appointment";
@@ -22,6 +23,9 @@ import DashboardAppointments from "@/pages/dashboard/appointment/pages/list";
 import DashboardAppointment from "@/pages/dashboard/appointment/pages/detail";
 import DashboardPatients from "@/pages/dashboard/patient/pages/list";
 import DashboardPatient from "@/pages/dashboard/patient/pages/detail";
+import DashboardDoctor from "@/pages/dashboard/doctor/pages/detail";
+import DashboardDoctors from "@/pages/dashboard/doctor/pages/list";
+import DashboardAddDoctor from "@/pages/dashboard/doctor/pages/add";
 import DashboardSettings from "@/pages/dashboard/settings";
 
 const AppRoutes = () => {
@@ -44,6 +48,10 @@ const AppRoutes = () => {
         {
           path: "verify-email",
           element: <VerifyEmail />,
+        },
+        {
+          path: "confirm-doctor",
+          element: <ConfirmDoctorInvitation />,
         },
         {
           path: "forgot-password",
@@ -98,6 +106,18 @@ const AppRoutes = () => {
         {
           path: "patient/:id",
           element: <DashboardPatient />,
+        },
+        {
+          path: "doctors",
+          element: <DashboardDoctors />,
+        },
+        {
+          path: "doctor/:id",
+          element: <DashboardDoctor />,
+        },
+        {
+          path: "doctor/add",
+          element: <DashboardAddDoctor />,
         },
         {
           path: "settings",
