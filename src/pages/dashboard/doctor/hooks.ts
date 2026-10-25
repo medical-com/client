@@ -39,6 +39,34 @@ export type UpdateDoctorPayload = {
 
 export type CreateDoctorPayload = Omit<UpdateDoctorPayload, "id">;
 
+export type DoctorSchedule = {
+  id: string;
+  doctorId: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  validFrom: string;
+  validTo: string | null;
+};
+
+export type DoctorScheduleListResponse = {
+  data: DoctorSchedule[];
+  pagination: DoctorListResponse["pagination"];
+};
+
+export type DoctorSchedulePayload = {
+  doctorId: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  validFrom: string;
+  validTo: string | null;
+};
+
+export type UpdateDoctorSchedulePayload = DoctorSchedulePayload & {
+  id: string;
+};
+
 export function useFindOneDoctorQuery(id?: string) {
   return useQuery({
     queryKey: ["dashboard", "doctor", "find-one", id],
@@ -104,5 +132,51 @@ export function useCreateDoctorMutation() {
         method: "POST",
         body: JSON.stringify(data),
       }),
+  });
+}
+
+export function useListDoctorScheduleQuery(doctorId?: string) {
+  return useQuery({
+    queryKey: ["dashboard", "doctor", "schedule", "list", doctorId],
+    queryFn: () =>
+      request<DoctorScheduleListResponse>(
+        `/dashboard/doctor/schedule/list?doctorId=${encodeURIComponent(doctorId!)}`,
+      ),
+    enabled: Boolean(doctorId),
+    retry: false,
+  });
+}
+
+export function useCreateDoctorScheduleMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: DoctorSchedulePayload) =>
+      request<DoctorSchedule>("/dashboard/doctor/schedule/create", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "doctor", "schedule", "list", variables.doctorId],
+      });
+    },
+  });
+}
+
+export function useUpdateDoctorScheduleMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateDoctorSchedulePayload) =>
+      request<DoctorSchedule>("/dashboard/doctor/schedule/update", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "doctor", "schedule", "list", variables.doctorId],
+      });
+    },
   });
 }

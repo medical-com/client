@@ -57,6 +57,36 @@ export const DashboardNavbar = () => {
           <Navigation />
         </nav>
 
+        {/* Back */}
+        <div>
+          <NavLink
+            to="/"
+            className="
+              flex w-full items-center gap-3
+              rounded-[5px] px-3 py-2.5
+              text-sm font-semibold
+              transition-colors
+              text-primary/65 hover:bg-primary/5 hover:text-primary
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+              />
+            </svg>
+            Back to main site
+          </NavLink>
+        </div>
+
         {/* Profile */}
         <div className="border-t border-primary/10 p-4">
           <UserProfile />
