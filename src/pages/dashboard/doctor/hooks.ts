@@ -67,6 +67,26 @@ export type UpdateDoctorSchedulePayload = DoctorSchedulePayload & {
   id: string;
 };
 
+export type DoctorScheduleException = {
+  id: string;
+  doctorId: string;
+  startAt: string;
+  endAt: string;
+  type: "available" | "unavailable";
+  reason: string | null;
+};
+
+export type DoctorScheduleExceptionPayload = {
+  doctorId: string;
+  startAt: string;
+  endAt: string;
+  type: DoctorScheduleException["type"];
+  reason: string | null;
+};
+
+export type UpdateDoctorScheduleExceptionPayload =
+  DoctorScheduleExceptionPayload & { id: string };
+
 export function useFindOneDoctorQuery(id?: string) {
   return useQuery({
     queryKey: ["dashboard", "doctor", "find-one", id],
@@ -176,6 +196,87 @@ export function useUpdateDoctorScheduleMutation() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["dashboard", "doctor", "schedule", "list", variables.doctorId],
+      });
+    },
+  });
+}
+
+export function useListDoctorScheduleExceptionsQuery(doctorId?: string) {
+  return useQuery({
+    queryKey: ["dashboard", "doctor", "schedule-exception", "list", doctorId],
+    queryFn: () =>
+      request<{ data: DoctorScheduleException[] }>(
+        `/dashboard/doctor/schedule-exception/list?doctorId=${encodeURIComponent(doctorId!)}&limit=100`,
+      ),
+    enabled: Boolean(doctorId),
+    retry: false,
+  });
+}
+
+export function useCreateDoctorScheduleExceptionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: DoctorScheduleExceptionPayload) =>
+      request<DoctorScheduleException>(
+        "/dashboard/doctor/schedule-exception/create",
+        { method: "POST", body: JSON.stringify(data) },
+      ),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          "dashboard",
+          "doctor",
+          "schedule-exception",
+          "list",
+          variables.doctorId,
+        ],
+      });
+    },
+  });
+}
+
+export function useUpdateDoctorScheduleExceptionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateDoctorScheduleExceptionPayload) =>
+      request<DoctorScheduleException>(
+        "/dashboard/doctor/schedule-exception/update",
+        { method: "POST", body: JSON.stringify(data) },
+      ),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          "dashboard",
+          "doctor",
+          "schedule-exception",
+          "list",
+          variables.doctorId,
+        ],
+      });
+    },
+  });
+}
+
+export function useDeleteDoctorScheduleExceptionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { id: string; doctorId: string }) =>
+      request<{ success: boolean }>(
+        "/dashboard/doctor/schedule-exception/delete",
+        { method: "POST", body: JSON.stringify({ id: data.id }) },
+      ),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          "dashboard",
+          "doctor",
+          "schedule-exception",
+          "list",
+          variables.doctorId,
+        ],
       });
     },
   });
