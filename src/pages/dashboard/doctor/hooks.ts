@@ -99,11 +99,11 @@ export function useFindOneDoctorQuery(id?: string) {
   });
 }
 
-export function useListDoctorQuery(search: string) {
+export function useListDoctorQuery(search: string, limit = 10, page = 1) {
   return useQuery({
-    queryKey: ["dashboard", "doctor", "list", search],
+    queryKey: ["dashboard", "doctor", "list", search, limit, page],
     queryFn: () => {
-      const params = new URLSearchParams({ page: "1", limit: "10" });
+      const params = new URLSearchParams({ page: String(page), limit: String(limit) });
       const normalizedSearch = search.trim();
 
       if (normalizedSearch) {

@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 
+import { DashboardPagination } from "@/components/dashboard-pagination";
 import { Input } from "@/components/ui/input";
 import { PatientRow } from "../components/patient-row";
 import { searchFieldOptions } from "../constants";
@@ -10,7 +11,8 @@ import type { SearchField } from "../types";
 const DashboardPatients = () => {
   const [search, setSearch] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("name");
-  const { data, isLoading, error } = useListPatientQuery(searchField, search);
+  const [page, setPage] = useState(1);
+  const { data, isLoading, error } = useListPatientQuery(searchField, search, page);
 
   const searchFieldLabel = searchFieldOptions.find(
     (option) => option.value === searchField,
@@ -52,7 +54,10 @@ const DashboardPatients = () => {
 
             <Input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
+              }}
               placeholder={`Search by ${searchFieldLabel.toLowerCase()}...`}
               className="h-10 rounded-[5px] border-primary/10 bg-background pl-9"
             />
@@ -63,7 +68,10 @@ const DashboardPatients = () => {
               <button
                 key={option.value}
                 type="button"
-                onClick={() => setSearchField(option.value)}
+                onClick={() => {
+                  setSearchField(option.value);
+                  setPage(1);
+                }}
                 className={`
                   rounded-sm px-4 py-2 text-xs font-bold
                   transition-colors
@@ -106,6 +114,14 @@ const DashboardPatients = () => {
               </p>
             )}
           </div>
+          {data?.pagination && (
+            <DashboardPagination
+              page={data.pagination.page}
+              totalPages={data.pagination.totalPages}
+              hasNextPage={data.pagination.hasNextPage}
+              onPageChange={setPage}
+            />
+          )}
         </section>
       </main>
     </div>

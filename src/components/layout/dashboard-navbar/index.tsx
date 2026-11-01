@@ -4,6 +4,7 @@ import {
   Menu,
   Settings,
   Stethoscope,
+  BriefcaseMedical,
   Users,
 } from "lucide-react";
 import {
@@ -37,6 +38,11 @@ const navigation = [
     label: "Doctors",
     href: "/dashboard/doctors",
     icon: Stethoscope,
+  },
+  {
+    label: "Services",
+    href: "/dashboard/services",
+    icon: BriefcaseMedical,
   },
 ];
 

@@ -43,12 +43,13 @@ export function useFindOnePatientQuery(id?: string) {
 export function useListPatientQuery(
   searchField: "name" | "email" | "phone",
   search: string,
+  page = 1,
 ) {
   return useQuery({
-    queryKey: ["dashboard", "patient", "list", searchField, search],
+    queryKey: ["dashboard", "patient", "list", searchField, search, page],
     queryFn: async () => {
       const params = new URLSearchParams({
-        page: "1",
+        page: String(page),
         limit: "10",
       });
 
@@ -79,11 +80,13 @@ export function useListPatientQuery(
         if (error instanceof ApiError && error.status === 401) {
           return {
             data: [],
-            total: 0,
-            page: 1,
-            limit: 10,
-            totalPages: 0,
-            hasNextPage: false,
+            pagination: {
+              total: 0,
+              page: 1,
+              limit: 10,
+              totalPages: 0,
+              hasNextPage: false,
+            },
           };
         }
 
