@@ -15,8 +15,6 @@ const getInitials = (name: string) =>
 export const PatientRow = ({ patient }: PatientRowProps) => {
   const navigate = useNavigate();
 
-  const isActive = patient.status === "Active";
-
   return (
     <button
       type="button"
@@ -51,29 +49,6 @@ export const PatientRow = ({ patient }: PatientRowProps) => {
           </span>
         </div>
       </div>
-
-      <div className="hidden text-right sm:block">
-        <p className="text-[10px] font-extrabold tracking-[0.18em] text-primary/40">
-          LAST VISIT
-        </p>
-        <p className="mt-1 text-sm font-semibold">{patient.lastVisit}</p>
-      </div>
-
-      <span
-        className={`
-          hidden items-center gap-2 rounded-[5px] border px-3 py-1.5 text-xs font-bold sm:flex
-          ${
-            isActive
-              ? "border-accent/20 bg-accent/10 text-accent"
-              : "border-primary/10 text-primary/40"
-          }
-        `}
-      >
-        <span
-          className={`size-1.5 rounded-full ${isActive ? "bg-accent" : "bg-primary/30"}`}
-        />
-        {patient.status}
-      </span>
 
       <ChevronRight className="size-4 shrink-0 text-primary/30" />
     </button>
