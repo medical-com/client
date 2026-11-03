@@ -1,10 +1,9 @@
-import { ArrowLeft, CalendarDays, Mail, Pencil, Phone } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 
+import { DetailDataTable } from "@/components/detail-data-table";
 import { Button } from "@/components/ui/button";
-import { ContactField } from "../components/contact-field";
-import { InfoCard } from "../components/info-card";
 import { PatientEditForm } from "../components/patient-edit-form";
 import {
   useFindOnePatientQuery,
@@ -45,7 +44,10 @@ const DashboardPatient = () => {
 
   if (isLoading) {
     return (
-      <PageMessage message="Loading patient..." onBack={() => navigate("/dashboard/patients")} />
+      <PageMessage
+        message="Loading patient..."
+        onBack={() => navigate("/dashboard/patients")}
+      />
     );
   }
 
@@ -87,7 +89,9 @@ const DashboardPatient = () => {
 
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
-              <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">{fullName}</h1>
+              <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+                {fullName}
+              </h1>
 
               <p className="mt-3 font-serif text-lg text-primary/60">
                 {getAge(patient.dateOfBirth)} years old · {dateOfBirth}
@@ -106,56 +110,27 @@ const DashboardPatient = () => {
           </div>
         </section>
 
-        {/* Patient information */}
-        <section className="mb-10 grid gap-px overflow-hidden rounded-[5px] bg-primary/10 sm:grid-cols-3">
-          <InfoCard
-            icon={<Phone className="size-5" />}
-            label="PHONE"
-            value={patient.phone}
-          />
-
-          <InfoCard
-            icon={<Mail className="size-5" />}
-            label="EMAIL"
-            value={patient.email}
-          />
-
-          <InfoCard
-            icon={<CalendarDays className="size-5" />}
-            label="DATE OF BIRTH"
-            value={dateOfBirth}
-          />
-        </section>
-
-        {/* Content */}
-        <section className="grid gap-10 lg:grid-cols-[1.4fr_0.8fr]">
-          {/* Contact */}
-          <div className="border-t border-primary/10 pt-6">
-            <p className="mb-6 text-xs font-extrabold tracking-[0.2em] text-accent">
-              CONTACT INFORMATION
-            </p>
-
-            <div className="grid gap-6 sm:grid-cols-2">
-              <ContactField label="Full name" value={fullName} />
-
-              <ContactField label="Date of birth" value={dateOfBirth} />
-
-              <ContactField
-                label="Phone"
-                value={patient.phone}
-                icon={<Phone className="size-4" />}
-              />
-
-              <ContactField
-                label="Email"
-                value={patient.email}
-                icon={<Mail className="size-4" />}
-              />
-
-              <ContactField label="PESEL" value={patient.pesel} />
-            </div>
-          </div>
-        </section>
+        <DetailDataTable
+          ariaLabel="Patient personal information"
+          sections={[
+            {
+              label: "Personal information",
+              rows: [
+                { label: "Full name", value: fullName },
+                { label: "Date of birth", value: dateOfBirth },
+                { label: "Age", value: `${getAge(patient.dateOfBirth)} years` },
+                { label: "PESEL", value: patient.pesel },
+              ],
+            },
+            {
+              label: "Contact",
+              rows: [
+                { label: "Phone", value: patient.phone },
+                { label: "Email", value: patient.email },
+              ],
+            },
+          ]}
+        />
 
         <PatientEditForm
           patient={patient}
@@ -169,16 +144,15 @@ const DashboardPatient = () => {
           }
           onSave={async (formValues) => {
             try {
-              const updatedPatient =
-                await updatePatientMutation.mutateAsync({
-                  id: patient.id,
-                  firstName: formValues.firstName,
-                  lastName: formValues.lastName,
-                  email: formValues.email,
-                  phoneNumber: formValues.phone,
-                  dateOfBirth: formValues.dateOfBirth,
-                  pesel: formValues.pesel,
-                });
+              const updatedPatient = await updatePatientMutation.mutateAsync({
+                id: patient.id,
+                firstName: formValues.firstName,
+                lastName: formValues.lastName,
+                email: formValues.email,
+                phoneNumber: formValues.phone,
+                dateOfBirth: formValues.dateOfBirth,
+                pesel: formValues.pesel,
+              });
               setEditedPatient(updatedPatient);
               return true;
             } catch {

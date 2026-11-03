@@ -2,6 +2,7 @@ import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { DashboardPagination } from "@/components/dashboard-pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DoctorRow } from "../components/doctor-row";
@@ -13,7 +14,8 @@ const DashboardDoctors = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("name");
-  const { data, isLoading, error } = useListDoctorQuery(search);
+  const [page, setPage] = useState(1);
+  const { data, isLoading, error } = useListDoctorQuery(search, 10, page);
 
   const searchFieldLabel = searchFieldOptions.find(
     (option) => option.value === searchField,
@@ -60,7 +62,10 @@ const DashboardDoctors = () => {
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
             <Input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
+              }}
               placeholder={`Search by ${searchFieldLabel.toLowerCase()}...`}
               className="h-10 rounded-[5px] border-primary/10 bg-background pl-9"
             />
@@ -71,7 +76,10 @@ const DashboardDoctors = () => {
               <button
                 key={option.value}
                 type="button"
-                onClick={() => setSearchField(option.value)}
+                onClick={() => {
+                  setSearchField(option.value);
+                  setPage(1);
+                }}
                 className={`rounded-sm px-4 py-2 text-xs font-bold transition-colors ${
                   searchField === option.value
                     ? "bg-primary text-background"
@@ -110,6 +118,14 @@ const DashboardDoctors = () => {
               </p>
             )}
           </div>
+          {data?.pagination && (
+            <DashboardPagination
+              page={data.pagination.page}
+              totalPages={data.pagination.totalPages}
+              hasNextPage={data.pagination.hasNextPage}
+              onPageChange={setPage}
+            />
+          )}
         </section>
       </main>
     </div>

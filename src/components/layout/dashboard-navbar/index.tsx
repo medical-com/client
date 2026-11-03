@@ -2,7 +2,6 @@ import {
   CalendarDays,
   LayoutDashboard,
   Menu,
-  Settings,
   Stethoscope,
   Users,
 } from "lucide-react";
@@ -56,6 +55,36 @@ export const DashboardNavbar = () => {
         <nav className="flex-1 px-4 py-6">
           <Navigation />
         </nav>
+
+        {/* Back */}
+        <div>
+          <NavLink
+            to="/"
+            className="
+              flex w-full items-center gap-3
+              rounded-[5px] px-3 py-2.5
+              text-sm font-semibold
+              transition-colors
+              text-primary/65 hover:bg-primary/5 hover:text-primary
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+              />
+            </svg>
+            Back to main site
+          </NavLink>
+        </div>
 
         {/* Profile */}
         <div className="border-t border-primary/10 p-4">
@@ -172,30 +201,6 @@ const Navigation = () => {
           );
         })}
       </div>
-
-      <p className="mb-3 mt-10 px-3 text-[10px] font-extrabold tracking-[0.2em] text-primary/40">
-        MANAGEMENT
-      </p>
-
-      <NavLink
-        to="/dashboard/settings"
-        className={({ isActive }) =>
-          `
-          flex w-full items-center gap-3
-          rounded-[5px] px-3 py-2.5
-          text-sm font-semibold
-          transition-colors
-          ${
-            isActive
-              ? "bg-primary text-background"
-              : "text-primary/65 hover:bg-primary/5 hover:text-primary"
-          }
-        `
-        }
-      >
-        <Settings className="size-4" />
-        Settings
-      </NavLink>
     </div>
   );
 };
