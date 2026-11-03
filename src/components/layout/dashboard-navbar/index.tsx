@@ -2,9 +2,7 @@ import {
   CalendarDays,
   LayoutDashboard,
   Menu,
-  Settings,
   Stethoscope,
-  BriefcaseMedical,
   Users,
 } from "lucide-react";
 import {
@@ -38,11 +36,6 @@ const navigation = [
     label: "Doctors",
     href: "/dashboard/doctors",
     icon: Stethoscope,
-  },
-  {
-    label: "Services",
-    href: "/dashboard/services",
-    icon: BriefcaseMedical,
   },
 ];
 
@@ -208,30 +201,6 @@ const Navigation = () => {
           );
         })}
       </div>
-
-      <p className="mb-3 mt-10 px-3 text-[10px] font-extrabold tracking-[0.2em] text-primary/40">
-        MANAGEMENT
-      </p>
-
-      <NavLink
-        to="/dashboard/settings"
-        className={({ isActive }) =>
-          `
-          flex w-full items-center gap-3
-          rounded-[5px] px-3 py-2.5
-          text-sm font-semibold
-          transition-colors
-          ${
-            isActive
-              ? "bg-primary text-background"
-              : "text-primary/65 hover:bg-primary/5 hover:text-primary"
-          }
-        `
-        }
-      >
-        <Settings className="size-4" />
-        Settings
-      </NavLink>
     </div>
   );
 };
