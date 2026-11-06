@@ -17,17 +17,21 @@ import ResetPassword from "@/pages/auth/reset-password";
 import Appointment from "@/pages/appointment";
 import Profile from "@/pages/profile";
 
-// Dashboard pages
-import Dashboard from "@/pages/dashboard";
-import DashboardAppointments from "@/pages/dashboard/appointment/pages/list";
-import DashboardAppointment from "@/pages/dashboard/appointment/pages/detail";
-import DashboardPatients from "@/pages/dashboard/patient/pages/list";
-import DashboardPatient from "@/pages/dashboard/patient/pages/detail";
-import DashboardDoctor from "@/pages/dashboard/doctor/pages/detail";
-import DashboardDoctors from "@/pages/dashboard/doctor/pages/list";
-import DashboardAddDoctor from "@/pages/dashboard/doctor/pages/add";
-import DashboardServices from "@/pages/dashboard/service/pages/list";
-import DashboardService from "@/pages/dashboard/service/pages/detail";
+// Dashboard admin pages
+import AdminDashboard from "@/pages/dashboard/admin";
+import DashboardAppointments from "@/pages/dashboard/receptionist/appointment/pages/list";
+import DashboardAppointment from "@/pages/dashboard/receptionist/appointment/pages/detail";
+import DashboardPatients from "@/pages/dashboard/admin/patient/pages/list";
+import DashboardPatient from "@/pages/dashboard/admin/patient/pages/detail";
+import DashboardDoctor from "@/pages/dashboard/admin/doctor/pages/detail";
+import DashboardDoctors from "@/pages/dashboard/admin/doctor/pages/list";
+import DashboardAddDoctor from "@/pages/dashboard/admin/doctor/pages/add";
+import DashboardServices from "@/pages/dashboard/admin/service/pages/list";
+import DashboardService from "@/pages/dashboard/admin/service/pages/detail";
+
+// Dashboard receptionist pages
+import ReceptionistDashboard from "@/pages/dashboard/receptionist";
+import { AccountRole } from "./types/account.type";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -83,14 +87,16 @@ const AppRoutes = () => {
         },
       ],
     },
+
+    //Dashboard routes
     {
-      path: "/dashboard",
-      element: <RequireAuth />,
+      path: "/dashboard/admin",
+      element: <RequireAuth roles={[AccountRole.ADMIN]} />,
 
       children: [
         {
           path: "",
-          element: <Dashboard />,
+          element: <AdminDashboard />,
         },
         {
           path: "appointments",
@@ -127,6 +133,18 @@ const AppRoutes = () => {
         {
           path: "service/:id",
           element: <DashboardService />,
+        },
+      ],
+    },
+
+    {
+      path: "/dashboard/receptionist",
+      element: <RequireAuth />,
+
+      children: [
+        {
+          path: "",
+          element: <ReceptionistDashboard />,
         },
       ],
     },

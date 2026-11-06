@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth, useMe } from "@/pages/auth/hooks";
 import { AccountRole } from "@/types/account.type";
+import { hasPermission } from "@/lib/utils";
 
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("en-US", {
@@ -17,7 +18,8 @@ const Profile = () => {
 
   if (!account) return null;
 
-  const initials = `${account.firstName.charAt(0)}${account.lastName.charAt(0)}`.toUpperCase();
+  const initials =
+    `${account.firstName.charAt(0)}${account.lastName.charAt(0)}`.toUpperCase();
   const roleLabel =
     account.role.charAt(0).toUpperCase() + account.role.slice(1);
 
@@ -104,12 +106,13 @@ const Profile = () => {
         </section>
 
         {/* Dashboard button */}
-        {account.role !== AccountRole.PATIENT && (
-          <section className="mx-auto max-w-360 px-5 py-10 sm:px-[6vw]">
-            <button
-              type="button"
-              onClick={() => navigate("/dashboard")}
-              className="
+        <section className="mx-auto max-w-360 md:flex">
+          {hasPermission(account.role as AccountRole, [AccountRole.ADMIN]) && (
+            <div className="py-10 sm:px-[6vw]">
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/admin")}
+                className="
                 bg-primary px-5 py-3
                 text-sm font-bold text-background
                 shadow-[5px_5px_0_var(--color-highlight)]
@@ -117,11 +120,52 @@ const Profile = () => {
                 hover:translate-x-0.5 hover:translate-y-0.5
                 hover:shadow-[3px_3px_0_var(--color-highlight)]
               "
-            >
-              Go to Dashboard
-            </button>
-          </section>
-        )}
+              >
+                Go to Admin Dashboard
+              </button>
+            </div>
+          )}
+
+          {hasPermission(account.role as AccountRole, [
+            AccountRole.RECEPTIONIST,
+          ]) && (
+            <div className="py-10 sm:px-[6vw]">
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/receptionist")}
+                className="
+                bg-primary px-5 py-3
+                text-sm font-bold text-background
+                shadow-[5px_5px_0_var(--color-highlight)]
+                transition-all duration-150
+                hover:translate-x-0.5 hover:translate-y-0.5
+                hover:shadow-[3px_3px_0_var(--color-highlight)]
+              "
+              >
+                Go to Receptionist Dashboard
+              </button>
+            </div>
+          )}
+
+          {hasPermission(account.role as AccountRole, [AccountRole.DOCTOR]) && (
+            <div className="py-10 sm:px-[6vw]">
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/doctor")}
+                className="
+                bg-primary px-5 py-3
+                text-sm font-bold text-background
+                shadow-[5px_5px_0_var(--color-highlight)]
+                transition-all duration-150
+                hover:translate-x-0.5 hover:translate-y-0.5
+                hover:shadow-[3px_3px_0_var(--color-highlight)]
+              "
+              >
+                Go to Doctor Dashboard
+              </button>
+            </div>
+          )}
+        </section>
 
         {/* Sign out */}
         <section className="mx-auto max-w-360 px-5 py-10 sm:px-[6vw]">

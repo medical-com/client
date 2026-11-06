@@ -1,19 +1,20 @@
-import { CalendarDays, Users } from "lucide-react";
+import { Users } from "lucide-react";
+import { QuickAction } from "@/components/dashboard/quick-action";
+import { useMe } from "../../auth/hooks";
 
-import { QuickAction } from "@/pages/dashboard/components/quick-action";
-
-const Dashboard = () => {
+const AdminDashboard = () => {
+  const { data: account } = useMe();
   return (
     <div className="min-h-screen bg-background text-primary">
       <main className="mx-auto w-full max-w-360 px-5 py-10 sm:px-8 lg:px-10">
         {/* Heading */}
         <section className="mb-10">
           <p className="mb-4 text-xs font-extrabold tracking-[0.22em] text-accent">
-            RECEPTION DESK
+            ADMIN DASHBOARD
           </p>
 
           <h1 className="font-serif text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
-            Good morning, Jane.
+            Good morning, {account?.firstName}.
           </h1>
         </section>
 
@@ -27,12 +28,6 @@ const Dashboard = () => {
 
             <div className="grid gap-3 sm:grid-cols-2">
               <QuickAction
-                icon={<CalendarDays className="size-5" />}
-                title="New appointment"
-                description="Schedule a patient visit"
-              />
-
-              <QuickAction
                 icon={<Users className="size-5" />}
                 title="Find patient"
                 description="Search patient records"
@@ -45,4 +40,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

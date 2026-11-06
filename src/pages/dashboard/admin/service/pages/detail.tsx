@@ -31,8 +31,11 @@ const DashboardService = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data: service, isLoading, error } = useFindOneServiceQuery(id);
-  const { data: doctorsData, isLoading: doctorsLoading, error: doctorsError } =
-    useListDoctorQuery("", 100);
+  const {
+    data: doctorsData,
+    isLoading: doctorsLoading,
+    error: doctorsError,
+  } = useListDoctorQuery("", 100);
   const update = useUpdateServiceMutation();
   const [form, setForm] = useState<ServiceForm>();
 
@@ -52,7 +55,7 @@ const DashboardService = () => {
     return (
       <PageMessage
         message="Loading service..."
-        onBack={() => navigate("/dashboard/services")}
+        onBack={() => navigate("/dashboard/admin/services")}
       />
     );
   }
@@ -61,7 +64,7 @@ const DashboardService = () => {
     return (
       <PageMessage
         message="Failed to load service."
-        onBack={() => navigate("/dashboard/services")}
+        onBack={() => navigate("/dashboard/admin/services")}
       />
     );
   }
@@ -96,7 +99,7 @@ const DashboardService = () => {
     <main className="mx-auto w-full max-w-360 px-5 py-10 sm:px-8 lg:px-10">
       <button
         type="button"
-        onClick={() => navigate("/dashboard/services")}
+        onClick={() => navigate("/dashboard/admin/services")}
         className="mb-8 flex items-center gap-2 text-xs font-bold text-primary/50 transition-colors hover:text-primary"
       >
         <ArrowLeft className="size-4" />
@@ -115,7 +118,10 @@ const DashboardService = () => {
         </p>
       </section>
 
-      <form onSubmit={submit} className="max-w-3xl border-t border-primary/10 pt-6">
+      <form
+        onSubmit={submit}
+        className="max-w-3xl border-t border-primary/10 pt-6"
+      >
         <div className="grid gap-6 sm:grid-cols-2">
           <FormField
             label="Name"
@@ -131,7 +137,9 @@ const DashboardService = () => {
             required
           />
           <div className="grid gap-2">
-            <Label className="text-xs font-bold text-primary/60">Category</Label>
+            <Label className="text-xs font-bold text-primary/60">
+              Category
+            </Label>
             <select
               value={form.category}
               onChange={(event) =>
@@ -206,7 +214,9 @@ const DashboardService = () => {
           </p>
         )}
         {update.isSuccess && (
-          <p className="mt-4 text-sm text-accent">Service updated successfully.</p>
+          <p className="mt-4 text-sm text-accent">
+            Service updated successfully.
+          </p>
         )}
 
         <div className="mt-8 flex justify-end border-t border-primary/10 pt-6">

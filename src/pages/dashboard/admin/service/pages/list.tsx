@@ -1,7 +1,7 @@
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DashboardPagination } from "@/components/dashboard-pagination";
+import { DashboardPagination } from "@/components/dashboard/dashboard-pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,7 +58,7 @@ const DashboardServices = () => {
   const isAdding = editingId === "new";
 
   const edit = (id: string) => {
-    navigate(`/dashboard/service/${id}`);
+    navigate(`/dashboard/admin/service/${id}`);
   };
 
   const cancel = () => {

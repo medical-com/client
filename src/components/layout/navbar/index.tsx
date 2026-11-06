@@ -51,7 +51,6 @@ export const Navbar = () => {
         <NavLink href="/">Home</NavLink>
         <NavLink href="/about">About</NavLink>
         <NavLink href="/appointment">Book an appointment</NavLink>
-        <NavLink href="/dashboard">Dashboard</NavLink>
       </nav>
 
       {/* Auth */}

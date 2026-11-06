@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import {
   useListDoctorScheduleExceptionsQuery,
   useListDoctorScheduleQuery,
-} from "@/pages/dashboard/doctor/hooks";
+} from "@/pages/dashboard/admin/doctor/hooks";
 import type {
   DoctorSchedule,
   DoctorScheduleException,
-} from "@/pages/dashboard/doctor/hooks";
+} from "@/pages/dashboard/admin/doctor/hooks";
 
 const HOURS = Array.from({ length: 11 }, (_, index) => index + 8);
 

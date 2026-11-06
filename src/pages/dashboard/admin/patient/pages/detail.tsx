@@ -46,7 +46,7 @@ const DashboardPatient = () => {
     return (
       <PageMessage
         message="Loading patient..."
-        onBack={() => navigate("/dashboard/patients")}
+        onBack={() => navigate("/dashboard/admin/patients")}
       />
     );
   }
@@ -55,7 +55,7 @@ const DashboardPatient = () => {
     return (
       <PageMessage
         message="Failed to load patient."
-        onBack={() => navigate("/dashboard/patients")}
+        onBack={() => navigate("/dashboard/admin/patients")}
       />
     );
   }
@@ -69,7 +69,7 @@ const DashboardPatient = () => {
         {/* Back */}
         <button
           type="button"
-          onClick={() => navigate("/dashboard/patients")}
+          onClick={() => navigate("/dashboard/admin/patients")}
           className="
             mb-8 flex items-center gap-2
             text-xs font-bold text-primary/50

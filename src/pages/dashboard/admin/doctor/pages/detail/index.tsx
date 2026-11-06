@@ -19,7 +19,7 @@ import {
 import { PageMessage, SectionTab } from "./components";
 import { PersonalInfo } from "./personal-info";
 import type { DoctorDetailSection } from "./types";
-import Calendar from "@/pages/dashboard/doctor/pages/detail/schedule-calendar";
+import Calendar from "@/pages/dashboard/admin/doctor/pages/detail/schedule-calendar";
 
 const DashboardDoctor = () => {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ const DashboardDoctor = () => {
     return (
       <PageMessage
         message="Loading doctor..."
-        onBack={() => navigate("/dashboard/doctors")}
+        onBack={() => navigate("/dashboard/admin/doctors")}
       />
     );
   }
@@ -53,7 +53,7 @@ const DashboardDoctor = () => {
     return (
       <PageMessage
         message="Failed to load doctor."
-        onBack={() => navigate("/dashboard/doctors")}
+        onBack={() => navigate("/dashboard/admin/doctors")}
       />
     );
   }
@@ -65,7 +65,7 @@ const DashboardDoctor = () => {
       <main className="mx-auto w-full max-w-360 px-5 py-10 sm:px-8 lg:px-10">
         <button
           type="button"
-          onClick={() => navigate("/dashboard/doctors")}
+          onClick={() => navigate("/dashboard/admin/doctors")}
           className="mb-8 flex items-center gap-2 text-xs font-bold text-primary/50 transition-colors hover:text-primary"
         >
           <ArrowLeft className="size-4" />

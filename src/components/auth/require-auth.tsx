@@ -16,7 +16,7 @@ export const RequireAuth = ({ roles }: { roles?: AccountRole[] }) => {
   }
 
   if (!account || (roles && !hasPermission(account.role as AccountRole, roles)))
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/" replace />;
 
   return <Outlet />;
 };

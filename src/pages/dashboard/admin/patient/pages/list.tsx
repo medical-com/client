@@ -1,32 +1,34 @@
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { DashboardPagination } from "@/components/dashboard-pagination";
-import { Button } from "@/components/ui/button";
+import { DashboardPagination } from "@/components/dashboard/dashboard-pagination";
 import { Input } from "@/components/ui/input";
-import { DoctorRow } from "../components/doctor-row";
+import { PatientRow } from "../components/patient-row";
 import { searchFieldOptions } from "../constants";
-import { useListDoctorQuery } from "../hooks";
+import { useListPatientQuery } from "../hooks";
 import type { SearchField } from "../types";
 
-const DashboardDoctors = () => {
-  const navigate = useNavigate();
+const DashboardPatients = () => {
   const [search, setSearch] = useState("");
   const [searchField, setSearchField] = useState<SearchField>("name");
   const [page, setPage] = useState(1);
-  const { data, isLoading, error } = useListDoctorQuery(search, 10, page);
+  const { data, isLoading, error } = useListPatientQuery(
+    searchField,
+    search,
+    page,
+  );
 
   const searchFieldLabel = searchFieldOptions.find(
     (option) => option.value === searchField,
   )!.label;
 
-  const doctors = (data?.data ?? []).map((doctor) => ({
-    id: doctor.id,
-    name: `Dr. ${doctor.firstName} ${doctor.lastName}`.trim(),
-    specialty: doctor.specialization,
-    email: doctor.email,
-    phone: doctor.phone,
+  const patients = (data?.data ?? []).map((patient) => ({
+    id: patient.id,
+    name: `${patient.firstName} ${patient.lastName}`.trim(),
+    email: patient.email,
+    phone: patient.phone,
+    lastVisit: "—",
+    status: "Active" as const,
   }));
 
   return (
@@ -38,28 +40,22 @@ const DashboardDoctors = () => {
               <p className="mb-3 text-xs font-extrabold tracking-[0.22em] text-accent">
                 RECEPTION DESK
               </p>
+
               <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-                Doctors
+                Patients
               </h1>
+
               <p className="mt-3 font-serif text-lg text-primary/60">
-                Manage your care team and professional records.
+                Manage patient records and appointment history.
               </p>
             </div>
-
-            <Button
-              type="button"
-              onClick={() => navigate("/dashboard/doctor/add")}
-              className="h-10 rounded-[5px] bg-primary px-4 text-background hover:bg-primary/85"
-            >
-              <Plus className="size-4" />
-              Add doctor
-            </Button>
           </div>
         </section>
 
         <section className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative max-w-sm flex-1">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
+
             <Input
               value={search}
               onChange={(event) => {
@@ -80,11 +76,15 @@ const DashboardDoctors = () => {
                   setSearchField(option.value);
                   setPage(1);
                 }}
-                className={`rounded-sm px-4 py-2 text-xs font-bold transition-colors ${
-                  searchField === option.value
-                    ? "bg-primary text-background"
-                    : "text-primary/50 hover:text-primary"
-                }`}
+                className={`
+                  rounded-sm px-4 py-2 text-xs font-bold
+                  transition-colors
+                  ${
+                    searchField === option.value
+                      ? "bg-primary text-background"
+                      : "text-primary/50 hover:text-primary"
+                  }
+                `}
               >
                 {option.label}
               </button>
@@ -96,25 +96,25 @@ const DashboardDoctors = () => {
           <div className="divide-y divide-primary/10">
             {isLoading && (
               <p className="px-5 py-10 text-center text-sm text-primary/50">
-                Loading doctors...
+                Loading patients...
               </p>
             )}
 
             {!isLoading &&
               !error &&
-              doctors.map((doctor) => (
-              <DoctorRow key={doctor.id} doctor={doctor} />
+              patients.map((patient) => (
+                <PatientRow key={patient.id} patient={patient} />
               ))}
 
-            {!isLoading && !error && doctors.length === 0 && (
+            {!isLoading && !error && patients.length === 0 && (
               <p className="px-5 py-10 text-center text-sm text-primary/50">
-                No doctors match your search.
+                No patients match your search.
               </p>
             )}
 
             {!isLoading && error && (
               <p className="px-5 py-10 text-center text-sm text-destructive">
-                Failed to load doctors.
+                Failed to load patients.
               </p>
             )}
           </div>
@@ -132,4 +132,4 @@ const DashboardDoctors = () => {
   );
 };
 
-export default DashboardDoctors;
+export default DashboardPatients;

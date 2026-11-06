@@ -1,11 +1,4 @@
 import {
-  CalendarDays,
-  LayoutDashboard,
-  Menu,
-  Stethoscope,
-  Users,
-} from "lucide-react";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -15,29 +8,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { NavLink } from "react-router-dom";
 import { UserProfile } from "@/components/user-profile";
-
-const navigation = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Appointments",
-    href: "/dashboard/appointments",
-    icon: CalendarDays,
-  },
-  {
-    label: "Patients",
-    href: "/dashboard/patients",
-    icon: Users,
-  },
-  {
-    label: "Doctors",
-    href: "/dashboard/doctors",
-    icon: Stethoscope,
-  },
-];
+import { Menu } from "lucide-react";
+import { useNaviagtionList } from "./navigation-list";
 
 export const DashboardNavbar = () => {
   return (
@@ -166,6 +138,8 @@ const Logo = () => {
 /* -------------------------------------------------------------------------- */
 
 const Navigation = () => {
+  let navigation = useNaviagtionList();
+
   return (
     <div>
       <p className="mb-3 px-3 text-[10px] font-extrabold tracking-[0.2em] text-primary/40">
@@ -180,7 +154,7 @@ const Navigation = () => {
             <NavLink
               key={item.href}
               to={item.href}
-              end={item.href === "/dashboard"}
+              end={item.href === "/dashboard/admin"}
               className={({ isActive }) =>
                 `
                 flex w-full items-center gap-3
