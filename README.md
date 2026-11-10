@@ -1,32 +1,49 @@
-# React + TypeScript + Vite
+# Medical.com — Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Frontend application for **Medical.com**, a full-stack web project in the healthcare domain. Developed with React and TypeScript, it provides a modern, component-based user interface and connects to the project's backend service.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Technology                | Purpose                                           |
+| ------------------------- | ------------------------------------------------- |
+| **React 19 & TypeScript** | Component-based UI development with static typing |
+| **Vite**                  | Fast development server and production builds     |
+| **React Router**          | Client-side routing                               |
+| **TanStack Query**        | Server-state management and data fetching         |
+| **React Hook Form & Zod** | Form handling and schema validation               |
+| **Tailwind CSS 4**        | Utility-first styling                             |
+| **shadcn/ui & Base UI**   | Reusable and accessible UI components             |
+| **Lucide React**          | Interface icons                                   |
+| **date-fns**              | Date utilities                                    |
+| **Oxlint**                | Code quality checks                               |
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Requirements
 
-## Expanding the Oxlint configuration
+- Node.js and npm
+- Access to the configured Medical.com backend
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### Installation
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+git clone https://github.com/medical-com/client.git
+cd client
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Configure any environment settings required by your local backend setup.
+
+### Useful Commands
+
+```bash
+npm run dev     # Start the development server
+npm run build   # Create a production build
+npm run preview # Preview the production build
+npm run lint    # Run lint checks
+```
+
+## Backend
+
+The API and supporting server-side services are available in the [Medical.com Backend repository](https://github.com/medical-com/backend).
