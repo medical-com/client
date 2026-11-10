@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { BrowserRouter, useLocation, useRoutes } from "react-router-dom";
 
 import { Navbar } from "@/components/layout/navbar";
@@ -31,6 +31,8 @@ import DashboardService from "@/pages/dashboard/admin/service/pages/detail";
 
 // Dashboard receptionist pages
 import ReceptionistDashboard from "@/pages/dashboard/receptionist";
+import ReceptionistCreateAppointment from "@/pages/dashboard/receptionist/appointment/pages/create";
+import DashboardAppointmentDay from "@/pages/dashboard/receptionist/appointment/pages/day";
 import { AccountRole } from "./types/account.type";
 
 const AppRoutes = () => {
@@ -103,6 +105,11 @@ const AppRoutes = () => {
           element: <DashboardAppointments />,
         },
         {
+          path: "appointments/day",
+          element: <DashboardAppointmentDay />,
+        },
+
+        {
           path: "appointment/:id",
           element: <DashboardAppointment />,
         },
@@ -139,12 +146,28 @@ const AppRoutes = () => {
 
     {
       path: "/dashboard/receptionist",
-      element: <RequireAuth />,
+      element: <RequireAuth roles={[AccountRole.RECEPTIONIST]} />,
 
       children: [
         {
           path: "",
           element: <ReceptionistDashboard />,
+        },
+        {
+          path: "appointments/create",
+          element: <ReceptionistCreateAppointment />,
+        },
+        {
+          path: "appointments",
+          element: <DashboardAppointments />,
+        },
+        {
+          path: "appointments/day",
+          element: <DashboardAppointmentDay />,
+        },
+        {
+          path: "appointment/:id",
+          element: <DashboardAppointment />,
         },
       ],
     },
@@ -155,14 +178,41 @@ const AppRoutes = () => {
 
 const AppLayout = () => {
   const location = useLocation();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return window.localStorage.getItem("dashboard-sidebar-collapsed") === "true";
+  });
 
   const isDashboardRoute = location.pathname.startsWith("/dashboard");
 
   return (
     <div className="min-h-screen bg-background">
-      {!isDashboardRoute ? <Navbar /> : <DashboardNavbar />}
+      {!isDashboardRoute ? (
+        <Navbar />
+      ) : (
+        <DashboardNavbar
+          collapsed={sidebarCollapsed}
+          onToggle={() => {
+            setSidebarCollapsed((collapsed) => {
+              const next = !collapsed;
+              window.localStorage.setItem(
+                "dashboard-sidebar-collapsed",
+                String(next),
+              );
+              return next;
+            });
+          }}
+        />
+      )}
 
-      <div className={isDashboardRoute ? "pt-20 lg:ml-64" : ""}>
+      <div
+        className={
+          isDashboardRoute
+            ? sidebarCollapsed
+              ? "pt-20 lg:ml-20"
+              : "pt-20 lg:ml-64"
+            : ""
+        }
+      >
         <Suspense fallback={<div>Loading...</div>}>
           <AppRoutes />
         </Suspense>

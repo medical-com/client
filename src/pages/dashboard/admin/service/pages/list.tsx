@@ -5,7 +5,6 @@ import { DashboardPagination } from "@/components/dashboard/dashboard-pagination
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useListDoctorQuery, type ClientDoctor } from "../../doctor/hooks";
 import {
   serviceCategories,
   useCreateServiceMutation,
@@ -15,6 +14,8 @@ import {
   useUpdateServiceMutation,
   type ServiceCategory,
 } from "../hooks";
+import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
+import type { ClientDoctor } from "@/pages/dashboard/hooks/doctor/types";
 
 type ServiceForm = {
   name: string;

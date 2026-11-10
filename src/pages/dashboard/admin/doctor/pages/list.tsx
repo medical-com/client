@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DoctorRow } from "../components/doctor-row";
 import { searchFieldOptions } from "../constants";
-import { useListDoctorQuery } from "../hooks";
 import type { SearchField } from "../types";
+import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
 
 const DashboardDoctors = () => {
   const navigate = useNavigate();

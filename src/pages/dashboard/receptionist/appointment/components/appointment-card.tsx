@@ -9,7 +9,9 @@ export const AppointmentCard = ({ appointment, top }: AppointmentCardProps) => {
   return (
     <button
       type="button"
-      onClick={() => navigate(`/dashboard/appointment/${appointment.id}`)}
+      onClick={() =>
+        navigate(`/dashboard/receptionist/appointment/${appointment.id}`)
+      }
       style={{ top: `${top + 4}px` }}
       className="
         absolute left-1 right-1
@@ -17,9 +19,8 @@ export const AppointmentCard = ({ appointment, top }: AppointmentCardProps) => {
         overflow-hidden
         rounded-sm
         border border-accent/20
-        bg-accent/10
+        bg-orange-300
         p-3 text-left
-        transition-all
         hover:-translate-y-0.5
         hover:shadow-[3px_3px_0_var(--color-highlight)]
       "
@@ -34,6 +35,10 @@ export const AppointmentCard = ({ appointment, top }: AppointmentCardProps) => {
 
       <p className="mt-2 truncate font-serif text-sm font-bold">
         {appointment.patient}
+      </p>
+
+      <p className="mt-1 truncate text-[10px] leading-4 text-primary/55">
+        {appointment.doctor}
       </p>
 
       <p className="mt-1 truncate text-[10px] leading-4 text-primary/55">

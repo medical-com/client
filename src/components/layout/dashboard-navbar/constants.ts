@@ -3,6 +3,7 @@ import {
   Stethoscope,
   Users,
   BriefcaseMedical,
+  CalendarCheck,
 } from "lucide-react";
 
 export const ADMIN_NAVIGATION = [
@@ -33,5 +34,15 @@ export const RECEPTIONIST_NAVIGATION = [
     label: "Dashboard",
     href: "/dashboard/receptionist",
     icon: LayoutDashboard,
+  },
+  {
+    label: "Create Appointment",
+    href: "/dashboard/receptionist/appointments/create",
+    icon: Stethoscope,
+  },
+  {
+    label: "Appointments",
+    href: "/dashboard/receptionist/appointments",
+    icon: CalendarCheck,
   },
 ];

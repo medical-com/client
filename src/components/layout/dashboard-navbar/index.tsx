@@ -8,37 +8,51 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { NavLink } from "react-router-dom";
 import { UserProfile } from "@/components/user-profile";
-import { Menu } from "lucide-react";
-import { useNaviagtionList } from "./navigation-list";
+import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { useNaviagtionList } from "./useNaviagtionList";
 
-export const DashboardNavbar = () => {
+type DashboardNavbarProps = {
+  collapsed: boolean;
+  onToggle: () => void;
+};
+
+export const DashboardNavbar = ({
+  collapsed,
+  onToggle,
+}: DashboardNavbarProps) => {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-64 shrink-0 border-r border-primary/10 bg-background lg:flex lg:flex-col">
+      <aside
+        className={`fixed inset-y-0 left-0 hidden shrink-0 border-r border-primary/10 bg-background lg:flex lg:flex-col ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+      >
         {/* Logo */}
-        <div className="flex h-20 items-center px-7">
-          <Logo />
+        <div
+          className={`flex h-20 items-center ${collapsed ? "justify-center" : "px-7"}`}
+        >
+          {collapsed ? (
+            <span className="font-serif text-xl font-bold">M</span>
+          ) : (
+            <Logo />
+          )}
         </div>
 
         <Separator className="bg-primary/10" />
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6">
-          <Navigation />
+          <Navigation collapsed={collapsed} onToggle={onToggle} />
         </nav>
 
         {/* Back */}
         <div>
           <NavLink
             to="/"
-            className="
-              flex w-full items-center gap-3
-              rounded-[5px] px-3 py-2.5
-              text-sm font-semibold
-              transition-colors
-              text-primary/65 hover:bg-primary/5 hover:text-primary
-            "
+            className={`flex w-full items-center rounded-[5px] px-3 py-2.5 text-sm font-semibold transition-colors text-primary/65 hover:bg-primary/5 hover:text-primary ${
+              collapsed ? "justify-center" : "gap-3"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,18 +68,18 @@ export const DashboardNavbar = () => {
                 d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
               />
             </svg>
-            Back to main site
+            {!collapsed && "Back to main site"}
           </NavLink>
         </div>
 
-        {/* Profile */}
-        <div className="border-t border-primary/10 p-4">
-          <UserProfile />
-        </div>
       </aside>
 
       {/* Mobile / top navigation */}
-      <header className="fixed inset-x-0 top-0 z-40 flex h-20 items-center justify-between border-b border-primary/10 bg-background px-5 sm:px-8 lg:left-64 lg:px-10">
+      <header
+        className={`fixed inset-x-0 top-0 z-40 flex h-20 items-center justify-between border-b border-primary/10 bg-background px-5 sm:px-8 lg:px-10 ${
+          collapsed ? "lg:left-20" : "lg:left-64"
+        }`}
+      >
         {/* Mobile menu */}
         <Sheet>
           <SheetTrigger
@@ -92,7 +106,7 @@ export const DashboardNavbar = () => {
             </SheetHeader>
 
             <nav className="px-4 py-6">
-              <Navigation />
+              <Navigation collapsed={false} />
             </nav>
 
             <div className="absolute inset-x-0 bottom-0 border-t border-primary/10 p-4">
@@ -137,14 +151,45 @@ const Logo = () => {
 /* Navigation                                                                 */
 /* -------------------------------------------------------------------------- */
 
-const Navigation = () => {
-  let navigation = useNaviagtionList();
+const Navigation = ({
+  collapsed,
+  onToggle,
+}: {
+  collapsed: boolean;
+  onToggle?: () => void;
+}) => {
+  const navigation = useNaviagtionList();
 
   return (
     <div>
-      <p className="mb-3 px-3 text-[10px] font-extrabold tracking-[0.2em] text-primary/40">
-        WORKSPACE
-      </p>
+      <div
+        className={`mb-3 flex items-center ${
+          collapsed ? "justify-center" : "justify-between px-3"
+        }`}
+      >
+        {!collapsed && (
+          <p className="text-[10px] font-extrabold tracking-[0.2em] text-primary/40">
+            WORKSPACE
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex items-center rounded-[5px] p-2 text-primary/60 hover:bg-primary/5 hover:text-primary"
+          aria-label={
+            collapsed
+              ? "Expand dashboard navigation"
+              : "Collapse dashboard navigation"
+          }
+          title={collapsed ? "Expand navigation" : "Collapse navigation"}
+        >
+          {collapsed ? (
+            <PanelLeftOpen className="size-4" />
+          ) : (
+            <PanelLeftClose className="size-4" />
+          )}
+        </button>
+      </div>
 
       <div className="space-y-1">
         {navigation.map((item) => {
@@ -154,14 +199,14 @@ const Navigation = () => {
             <NavLink
               key={item.href}
               to={item.href}
-              end={item.href === "/dashboard/admin"}
+              end={true}
               className={({ isActive }) =>
                 `
-                flex w-full items-center gap-3
+                flex w-full items-center
                 rounded-[5px] px-3 py-2.5
                 text-sm font-semibold
                 transition-colors
-                ${
+                ${collapsed ? "justify-center" : "gap-3"} ${
                   isActive
                     ? "bg-primary text-background"
                     : "text-primary/65 hover:bg-primary/5 hover:text-primary"
@@ -170,7 +215,7 @@ const Navigation = () => {
               }
             >
               <Icon className="size-4" />
-              {item.label}
+              {!collapsed && item.label}
             </NavLink>
           );
         })}

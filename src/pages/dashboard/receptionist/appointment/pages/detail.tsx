@@ -14,13 +14,38 @@ import { InfoCard } from "../components/info-card";
 import { PatientField } from "../components/patient-field";
 import { StatusBadge } from "../components/status-badge";
 import { StatusButton } from "../components/status-button";
-import { getMockAppointment, statusOptions } from "../constants";
+import { statusOptions } from "../constants";
+import { useFindAppointmentQuery } from "../hooks";
 
 const DashboardAppointment = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const appointment = getMockAppointment(id);
+  const appointmentQuery = useFindAppointmentQuery(id);
+  const appointment = appointmentQuery.data;
+
+  if (appointmentQuery.isLoading)
+    return <p className="p-8">Loading appointment...</p>;
+  if (appointmentQuery.isError || !appointment) {
+    return (
+      <p className="p-8 text-destructive">Appointment could not be loaded.</p>
+    );
+  }
+
+  const start = new Date(appointment.startAt);
+  const end = new Date(appointment.endAt);
+  const duration = Math.round((end.getTime() - start.getTime()) / 60000);
+  const date = start.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+  const time = start.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   return (
     <div className="min-h-screen bg-background text-primary">
@@ -28,7 +53,7 @@ const DashboardAppointment = () => {
         {/* Back */}
         <button
           type="button"
-          onClick={() => navigate("/dashboard/appointments")}
+          onClick={() => navigate("/dashboard/receptionist/appointments")}
           className="
             mb-8 flex items-center gap-2
             text-xs font-bold text-primary/50
@@ -49,11 +74,11 @@ const DashboardAppointment = () => {
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
               <h1 className="font-serif text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-                {appointment.patient.name}
+                {appointment.patient.firstName} {appointment.patient.lastName}
               </h1>
 
               <p className="mt-3 font-serif text-lg text-primary/60">
-                {appointment.type}
+                {appointment.service.name}
               </p>
             </div>
 
@@ -66,19 +91,19 @@ const DashboardAppointment = () => {
           <InfoCard
             icon={<CalendarDays className="size-5" />}
             label="DATE"
-            value={appointment.date}
+            value={date}
           />
 
           <InfoCard
             icon={<Clock className="size-5" />}
             label="TIME"
-            value={`${appointment.time} · ${appointment.duration}`}
+            value={`${time} · ${duration} minutes`}
           />
 
           <InfoCard
             icon={<User className="size-5" />}
             label="DOCTOR"
-            value={appointment.doctor}
+            value={`Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`}
           />
         </section>
 
@@ -93,12 +118,14 @@ const DashboardAppointment = () => {
             <div className="grid gap-6 sm:grid-cols-2">
               <PatientField
                 label="Full name"
-                value={appointment.patient.name}
+                value={`${appointment.patient.firstName} ${appointment.patient.lastName}`}
               />
 
               <PatientField
                 label="Date of birth"
-                value={appointment.patient.dateOfBirth}
+                value={new Date(
+                  appointment.patient.dateOfBirth,
+                ).toLocaleDateString()}
               />
 
               <PatientField
@@ -122,7 +149,7 @@ const DashboardAppointment = () => {
               </p>
 
               <p className="font-serif text-base leading-7 text-primary/70">
-                {appointment.notes}
+                {appointment.notes || "No notes were added."}
               </p>
             </div>
           </div>
@@ -147,7 +174,7 @@ const DashboardAppointment = () => {
                 {statusOptions.map((status) => (
                   <StatusButton
                     key={status}
-                    status={status}
+                    status={status.toLowerCase()}
                     active={appointment.status}
                   />
                 ))}

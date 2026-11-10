@@ -10,9 +10,73 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppointmentCard } from "../components/appointment-card";
-import { days, hours } from "../constants";
+import { AppointmentFilterDropdown } from "../components/appointment-filter-dropdown";
+import { hours } from "../constants";
+import { useListAppointmentsQuery } from "../hooks";
+import type { Day } from "../types";
+import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
+import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";
+import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+
+const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+const startOfWeek = (date: Date) => {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  const day = result.getDay() || 7;
+  result.setDate(result.getDate() - day + 1);
+  return result;
+};
 
 const DashboardAppointments = () => {
+  const navigate = useNavigate();
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [search, setSearch] = useState("");
+  const [doctorId, setDoctorId] = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const doctorsQuery = useListDoctorQuery("", 100);
+  const servicesQuery = useListServiceQuery("", 1, 100);
+  const weekDates = useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(weekStart);
+        date.setDate(date.getDate() + index);
+        return date;
+      }),
+    [weekStart],
+  );
+  const weekEnd = new Date(weekDates[6] ?? weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 1);
+  const appointmentsQuery = useListAppointmentsQuery(
+    formatDate(weekStart),
+    formatDate(weekEnd),
+    search,
+    doctorId,
+    serviceId,
+  );
+  const days: Day[] = weekDates.map((date) => ({
+    name: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
+    date: date.getDate(),
+    appointments: (appointmentsQuery.data?.data ?? [])
+      .filter(
+        (appointment) =>
+          formatDate(new Date(appointment.startAt)) === formatDate(date),
+      )
+      .map((appointment) => ({
+        id: appointment.id,
+        time: new Date(appointment.startAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }),
+        patient: `${appointment.patient.firstName} ${appointment.patient.lastName}`,
+        doctor: `Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
+        type: appointment.service.name,
+        duration: appointment.service.duration,
+      })),
+  }));
+  const weekLabel = `${weekStart.toLocaleDateString("en-US", { month: "long", day: "numeric" })} – ${weekDates[6]?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`;
+
   return (
     <div className="min-h-screen bg-background text-primary">
       <main className="mx-auto w-full max-w-[1600px] px-5 py-8 sm:px-8 lg:px-10">
@@ -34,6 +98,9 @@ const DashboardAppointments = () => {
             </div>
 
             <Button
+              onClick={() =>
+                navigate("/dashboard/receptionist/appointments/create")
+              }
               className="
                 rounded-[5px]
                 bg-primary text-background
@@ -60,6 +127,11 @@ const DashboardAppointments = () => {
                 variant="outline"
                 size="icon"
                 className="size-9 rounded-[5px] border-primary/10"
+                onClick={() => {
+                  const date = new Date(weekStart);
+                  date.setDate(date.getDate() - 7);
+                  setWeekStart(date);
+                }}
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -68,6 +140,11 @@ const DashboardAppointments = () => {
                 variant="outline"
                 size="icon"
                 className="size-9 rounded-[5px] border-primary/10"
+                onClick={() => {
+                  const date = new Date(weekStart);
+                  date.setDate(date.getDate() + 7);
+                  setWeekStart(date);
+                }}
               >
                 <ChevronRight className="size-4" />
               </Button>
@@ -75,40 +152,53 @@ const DashboardAppointments = () => {
               <Button
                 variant="outline"
                 className="ml-2 rounded-[5px] border-primary/10"
+                onClick={() =>
+                  navigate("/dashboard/receptionist/appointments/day")
+                }
               >
                 Today
               </Button>
 
-              <h2 className="ml-2 font-serif text-lg font-bold">
-                August 24 – 30, 2026
-              </h2>
-            </div>
-
-            {/* View switch */}
-            <div className="flex rounded-[5px] border border-primary/10 p-1">
-              <button
-                type="button"
-                className="rounded-sm bg-primary px-4 py-2 text-xs font-bold text-background"
-              >
-                Week
-              </button>
-
-              <button
-                type="button"
-                className="rounded-sm px-4 py-2 text-xs font-bold text-primary/50 hover:text-primary"
-              >
-                Day
-              </button>
+              <h2 className="ml-2 font-serif text-lg font-bold">{weekLabel}</h2>
             </div>
           </div>
 
           {/* Search */}
-          <div className="relative max-w-sm">
+          <div className="relative  flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
 
             <Input
               placeholder="Search patients..."
-              className="h-10 rounded-[5px] border-primary/10 bg-background pl-9"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              className="h-10 w-2/9 rounded-[5px] border-primary/10 bg-background pl-9"
+            />
+
+            <AppointmentFilterDropdown
+              label="Doctor"
+              placeholder="All doctors"
+              value={doctorId}
+              onChange={setDoctorId}
+              disabled={doctorsQuery.isLoading || doctorsQuery.isError}
+              options={
+                doctorsQuery.data?.data.map((doctor) => ({
+                  value: doctor.id,
+                  label: `Dr. ${doctor.firstName} ${doctor.lastName}`,
+                })) ?? []
+              }
+            />
+            <AppointmentFilterDropdown
+              label="Service"
+              placeholder="All services"
+              value={serviceId}
+              onChange={setServiceId}
+              disabled={servicesQuery.isLoading || servicesQuery.isError}
+              options={
+                servicesQuery.data?.data.map((service) => ({
+                  value: service.id,
+                  label: service.name,
+                })) ?? []
+              }
             />
           </div>
         </section>

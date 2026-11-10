@@ -1,7 +1,8 @@
 export type Appointment = {
-  id: number;
+  id: string | number;
   time: string;
   patient: string;
+  doctor: string;
   type: string;
   duration: number;
 };
