@@ -164,18 +164,14 @@ const ReceptionistCreateAppointment = () => {
       .toLowerCase()
       .includes(patientSearch.toLowerCase()),
   );
+  const hasNewPatientData = Object.values(newPatient).every(
+    (value) => value.trim().length > 0,
+  );
   const canContinue =
-    Boolean(service && selectedDate && selectedTime) &&
+    Boolean(serviceId && selectedDate && selectedTime) &&
     (patientMode === "existing"
       ? Boolean(selectedPatient)
-      : Boolean(
-          newPatient.firstName &&
-            newPatient.lastName &&
-            newPatient.phone &&
-            newPatient.email &&
-            newPatient.dateOfBirth &&
-            newPatient.pesel,
-        ));
+      : hasNewPatientData);
 
   const updateDoctor = (id: string) => {
     setDoctorId(id);

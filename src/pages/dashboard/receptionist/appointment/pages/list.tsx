@@ -19,7 +19,13 @@ import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";
 import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
 const startOfWeek = (date: Date) => {
   const result = new Date(date);
   result.setHours(0, 0, 0, 0);
