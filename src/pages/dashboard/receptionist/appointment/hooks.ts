@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { request } from "@/lib/api";
 
@@ -17,11 +17,18 @@ type AvailableDatesResponse = {
   data: AvailableDate[];
 };
 
+export type AppointmentStatus =
+  | "scheduled"
+  | "confirmed"
+  | "completed"
+  | "cancelled"
+  | "no_show";
+
 export type ClientAppointment = {
   id: string;
   startAt: string;
   endAt: string;
-  status: string;
+  status: AppointmentStatus;
   notes: string | null;
   service: { id: string; name: string; duration: number };
   doctor: {
@@ -30,6 +37,7 @@ export type ClientAppointment = {
     lastName: string;
     specialization: string;
   };
+
   patient: {
     id: string;
     firstName: string;
@@ -91,6 +99,29 @@ export function useFindAppointmentQuery(id?: string) {
       ),
     enabled: Boolean(id),
     retry: false,
+  });
+}
+
+export function useUpdateAppointmentStatusMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { id: string; status: AppointmentStatus }) =>
+      request<{ status: AppointmentStatus }>(
+        "/dashboard/appointment/update-status",
+        {
+          method: "PATCH",
+          body: JSON.stringify(data),
+        },
+      ),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "appointment", "find-one", variables.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "appointment", "list"],
+      });
+    },
   });
 }
 

@@ -264,6 +264,7 @@ const DashboardAppointmentDay = () => {
                           doctor: `Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
                           type: appointment.service.name,
                           duration: appointment.service.duration,
+                          status: appointment.status,
                         }}
                         top={(minutesFromEight / 60) * 96}
                       />

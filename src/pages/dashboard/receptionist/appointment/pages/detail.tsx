@@ -1,27 +1,22 @@
-import {
-  ArrowLeft,
-  CalendarDays,
-  Clock,
-  Mail,
-  Phone,
-  User,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Separator } from "@/components/ui/separator";
-import { InfoCard } from "../components/info-card";
-import { PatientField } from "../components/patient-field";
 import { StatusBadge } from "../components/status-badge";
 import { StatusButton } from "../components/status-button";
 import { statusOptions } from "../constants";
-import { useFindAppointmentQuery } from "../hooks";
+import {
+  useFindAppointmentQuery,
+  useUpdateAppointmentStatusMutation,
+  type AppointmentStatus,
+} from "../hooks";
 
 const DashboardAppointment = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const appointmentQuery = useFindAppointmentQuery(id);
+  const updateStatusMutation = useUpdateAppointmentStatusMutation();
   const appointment = appointmentQuery.data;
 
   if (appointmentQuery.isLoading)
@@ -46,6 +41,11 @@ const DashboardAppointment = () => {
     minute: "2-digit",
     hour12: false,
   });
+  const handleStatusChange = (status: AppointmentStatus) => {
+    if (status !== appointment.status && id) {
+      updateStatusMutation.mutate({ id, status });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-primary">
@@ -86,101 +86,142 @@ const DashboardAppointment = () => {
           </div>
         </section>
 
-        {/* Appointment information */}
-        <section className="mb-10 grid gap-px overflow-hidden rounded-[5px] bg-primary/10 sm:grid-cols-3">
-          <InfoCard
-            icon={<CalendarDays className="size-5" />}
-            label="DATE"
-            value={date}
-          />
+        <section className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
+          <div className="space-y-8">
+            <section className="overflow-hidden rounded-[5px] border border-primary/10">
+              <div className="border-b border-primary/10 px-5 py-4">
+                <p className="text-xs font-extrabold tracking-[0.2em] text-accent">
+                  APPOINTMENT INFORMATION
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <tbody className="divide-y divide-primary/10">
+                    <tr>
+                      <th className="w-1/3 px-5 py-4 font-bold text-primary/45">
+                        Date
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">{date}</td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 font-bold text-primary/45">
+                        Time
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        {time} · {duration} minutes
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 font-bold text-primary/45">
+                        Doctor
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        Dr. {appointment.doctor.firstName}{" "}
+                        {appointment.doctor.lastName}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 font-bold text-primary/45">
+                        Service
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        {appointment.service.name}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 align-top font-bold text-primary/45">
+                        Notes
+                      </th>
+                      <td className="px-5 py-4 leading-6 text-primary/70">
+                        {appointment.notes || "No notes were added."}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
 
-          <InfoCard
-            icon={<Clock className="size-5" />}
-            label="TIME"
-            value={`${time} · ${duration} minutes`}
-          />
-
-          <InfoCard
-            icon={<User className="size-5" />}
-            label="DOCTOR"
-            value={`Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`}
-          />
-        </section>
-
-        {/* Content */}
-        <section className="grid gap-10 lg:grid-cols-[1.4fr_0.8fr]">
-          {/* Patient */}
-          <div className="border-t border-primary/10 pt-6">
-            <p className="mb-6 text-xs font-extrabold tracking-[0.2em] text-accent">
-              PATIENT INFORMATION
-            </p>
-
-            <div className="grid gap-6 sm:grid-cols-2">
-              <PatientField
-                label="Full name"
-                value={`${appointment.patient.firstName} ${appointment.patient.lastName}`}
-              />
-
-              <PatientField
-                label="Date of birth"
-                value={new Date(
-                  appointment.patient.dateOfBirth,
-                ).toLocaleDateString()}
-              />
-
-              <PatientField
-                label="Phone"
-                value={appointment.patient.phone}
-                icon={<Phone className="size-4" />}
-              />
-
-              <PatientField
-                label="Email"
-                value={appointment.patient.email}
-                icon={<Mail className="size-4" />}
-              />
-            </div>
-
-            <Separator className="my-8 bg-primary/10" />
-
-            <div>
-              <p className="mb-3 text-xs font-bold text-primary/45">
-                APPOINTMENT NOTES
-              </p>
-
-              <p className="font-serif text-base leading-7 text-primary/70">
-                {appointment.notes || "No notes were added."}
-              </p>
-            </div>
+            <section className="overflow-hidden rounded-[5px] border border-primary/10">
+              <div className="border-b border-primary/10 px-5 py-4">
+                <p className="text-xs font-extrabold tracking-[0.2em] text-accent">
+                  PATIENT INFORMATION
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <tbody className="divide-y divide-primary/10">
+                    <tr>
+                      <th className="w-1/3 px-5 py-4 font-bold text-primary/45">
+                        Full name
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        {appointment.patient.firstName}{" "}
+                        {appointment.patient.lastName}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 font-bold text-primary/45">
+                        Date of birth
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        {new Date(
+                          appointment.patient.dateOfBirth,
+                        ).toLocaleDateString()}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 font-bold text-primary/45">
+                        Phone
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        {appointment.patient.phone}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="px-5 py-4 font-bold text-primary/45">
+                        Email
+                      </th>
+                      <td className="px-5 py-4 font-serif font-bold">
+                        {appointment.patient.email}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </div>
 
-          {/* Status */}
-          <div className="border-t border-primary/10 pt-6">
-            <p className="mb-6 text-xs font-extrabold tracking-[0.2em] text-accent">
-              APPOINTMENT STATUS
-            </p>
-
-            <div className="rounded-[5px] border border-primary/10 p-6">
-              <p className="font-serif text-xl font-bold">
-                {appointment.status}
+          <section className="h-fit overflow-hidden rounded-[5px] border border-primary/10">
+            <div className="border-b border-primary/10 px-5 py-4">
+              <p className="text-xs font-extrabold tracking-[0.2em] text-accent">
+                APPOINTMENT STATUS
               </p>
-
-              <p className="mt-2 text-sm leading-6 text-primary/50">
+            </div>
+            <div className="p-5">
+              <StatusBadge status={appointment.status} />
+              <p className="mt-4 text-sm leading-6 text-primary/50">
                 Update the appointment status as the patient progresses through
                 their visit.
               </p>
-
-              <div className="mt-6 grid gap-2">
+              <div className="mt-5 grid gap-2">
                 {statusOptions.map((status) => (
                   <StatusButton
-                    key={status}
-                    status={status.toLowerCase()}
+                    key={status.value}
+                    status={status.value}
+                    label={status.label}
                     active={appointment.status}
+                    disabled={updateStatusMutation.isPending}
+                    onClick={() => handleStatusChange(status.value)}
                   />
                 ))}
               </div>
+              {updateStatusMutation.isError && (
+                <p className="mt-4 text-sm text-destructive">
+                  The appointment status could not be updated.
+                </p>
+              )}
             </div>
-          </div>
+          </section>
         </section>
       </main>
     </div>

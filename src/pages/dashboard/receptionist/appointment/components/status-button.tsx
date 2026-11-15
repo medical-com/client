@@ -1,11 +1,28 @@
 import type { StatusButtonProps } from "../types";
 
-export const StatusButton = ({ status, active }: StatusButtonProps) => {
+const statusDotColors: Record<string, string> = {
+  scheduled: "bg-sky-500",
+  confirmed: "bg-emerald-500",
+  completed: "bg-blue-500",
+  cancelled: "bg-red-500",
+  no_show: "bg-amber-500",
+};
+
+export const StatusButton = ({
+  status,
+  active,
+  label,
+  disabled,
+  onClick,
+}: StatusButtonProps) => {
   const isActive = status === active;
 
   return (
     <button
       type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={isActive}
       className={`
         flex items-center justify-between
         rounded-[5px]
@@ -20,12 +37,12 @@ export const StatusButton = ({ status, active }: StatusButtonProps) => {
         }
       `}
     >
-      <span>{status}</span>
+      <span>{label}</span>
 
       <span
         className={`
           size-2 rounded-full
-          ${isActive ? "bg-accent" : "bg-primary/20"}
+          ${statusDotColors[status] ?? "bg-primary/20"}
         `}
       />
     </button>

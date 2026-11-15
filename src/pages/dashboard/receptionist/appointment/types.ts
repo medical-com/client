@@ -5,6 +5,7 @@ export type Appointment = {
   doctor: string;
   type: string;
   duration: number;
+  status?: string;
 };
 
 export type Day = {
@@ -52,4 +53,7 @@ export type PatientFieldProps = {
 export type StatusButtonProps = {
   status: string;
   active: string;
+  label: string;
+  disabled?: boolean;
+  onClick: () => void;
 };

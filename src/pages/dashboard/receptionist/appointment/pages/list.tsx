@@ -79,6 +79,7 @@ const DashboardAppointments = () => {
         doctor: `Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
         type: appointment.service.name,
         duration: appointment.service.duration,
+        status: appointment.status,
       })),
   }));
   const weekLabel = `${weekStart.toLocaleDateString("en-US", { month: "long", day: "numeric" })} – ${weekDates[6]?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`;

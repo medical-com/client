@@ -161,11 +161,12 @@ export const hours = [
 ];
 
 export const statusOptions = [
-  "Confirmed",
-  "Checked in",
-  "Completed",
-  "Cancelled",
-];
+  { value: "scheduled", label: "Scheduled" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "completed", label: "Completed" },
+  { value: "cancelled", label: "Cancelled" },
+  { value: "no_show", label: "No show" },
+] as const;
 
 // Temporary data.
 // Later this will come from your API using the appointment `id`.
