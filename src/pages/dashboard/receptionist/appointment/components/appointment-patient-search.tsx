@@ -38,10 +38,10 @@ export const AppointmentPatientSearch = ({
   const selectedLabel = options.find((option) => option.value === field)?.label;
 
   return (
-    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,320px)_auto]">
+    <div className="flex gap-2 flex-col sm:items-center md:flex-row">
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex h-10 w-full items-center justify-between gap-3 rounded-[5px] border border-primary/15 bg-background px-3 text-left text-sm font-medium shadow-sm outline-none transition-colors hover:border-primary/30 focus:border-accent focus:ring-2 focus:ring-accent/20"
+          className="flex h-10 w-full shrink-0 items-center justify-between gap-3 rounded-[5px] border border-primary/15 bg-background px-3 text-left text-sm font-medium shadow-sm outline-none transition-colors hover:border-primary/30 focus:border-accent focus:ring-2 focus:ring-accent/20 sm:w-40"
           aria-label="Patient search field"
         >
           <span className="truncate">{selectedLabel}</span>
@@ -66,7 +66,7 @@ export const AppointmentPatientSearch = ({
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <div className="relative">
+      <div className="relative min-w-0 flex-1">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
         <Input
           placeholder={`Search by ${field === "phone" ? "phone number" : field}`}
@@ -82,9 +82,19 @@ export const AppointmentPatientSearch = ({
         type="button"
         onClick={onSearch}
         disabled={!value.trim()}
-        className="h-9 rounded-[5px] bg-primary px-2 lg:w-50 text-xs font-bold text-background transition-colors hover:bg-primary/85 disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-10 w-full shrink-0 rounded-[5px] bg-primary px-2 text-xs font-bold text-background transition-colors hover:bg-primary/85 disabled:cursor-not-allowed disabled:opacity-50 sm:w-40"
       >
         Search
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          onChange("");
+          onSearch();
+        }}
+        className="h-10 w-full shrink-0 rounded-[5px] bg-primary px-2 text-xs font-bold text-background transition-colors hover:bg-primary/85 disabled:cursor-not-allowed disabled:opacity-50 sm:w-40"
+      >
+        Show All
       </button>
     </div>
   );
