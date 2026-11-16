@@ -14,7 +14,7 @@ import { DoctorStep } from "./components/doctor-step";
 import { PatientStep } from "./components/patient-step";
 import { ReviewStep } from "./components/review-step";
 import { ServiceStep } from "./components/service-step";
-import type { NewPatient, PatientMode } from "./types";
+import type { NewPatient, PatientMode, PatientSearchField } from "./types";
 import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";
 import { useListAvailableDatesQuery } from "../../hooks";
 import { useCreateAppointmentMutation } from "../../hooks";
@@ -75,6 +75,9 @@ const ReceptionistCreateAppointment = () => {
   const [weekStart, setWeekStart] = useState(initialDate);
   const [patientMode, setPatientMode] = useState<PatientMode>("existing");
   const [patientSearch, setPatientSearch] = useState("");
+  const [patientSearchField, setPatientSearchField] =
+    useState<PatientSearchField>("name");
+  const [submittedPatientSearch, setSubmittedPatientSearch] = useState("");
   const [selectedPatient, setSelectedPatient] =
     useState<ClientPatientListItem | null>(null);
   const [newPatient, setNewPatient] = useState(emptyNewPatient);
@@ -84,10 +87,12 @@ const ReceptionistCreateAppointment = () => {
 
   const doctorQuery = useListDoctorQuery(doctorSearch, 20, 1, serviceId);
   const serviceQuery = useListServiceQuery("", 1, 100);
-  const patientSearchField = /^\d[\d\s()+-]*$/.test(patientSearch)
-    ? "phone"
-    : "name";
-  const patientQuery = useListPatientQuery(patientSearchField, patientSearch);
+  const patientQuery = useListPatientQuery(
+    patientSearchField,
+    submittedPatientSearch,
+    1,
+    Boolean(submittedPatientSearch),
+  );
 
   const allDoctors = useMemo(() => {
     if (!serviceId) return [];
@@ -159,19 +164,13 @@ const ReceptionistCreateAppointment = () => {
     if (selectedTime && !slots.includes(selectedTime)) setSelectedTime("");
   }, [selectedTime, slots]);
 
-  const patients = (patientQuery.data?.data ?? []).filter((patient) =>
-    `${patient.firstName} ${patient.lastName} ${patient.pesel} ${patient.phone}`
-      .toLowerCase()
-      .includes(patientSearch.toLowerCase()),
-  );
+  const patients = patientQuery.data?.data ?? [];
   const hasNewPatientData = Object.values(newPatient).every(
     (value) => value.trim().length > 0,
   );
   const canContinue =
     Boolean(serviceId && selectedDate && selectedTime) &&
-    (patientMode === "existing"
-      ? Boolean(selectedPatient)
-      : hasNewPatientData);
+    (patientMode === "existing" ? Boolean(selectedPatient) : hasNewPatientData);
 
   const updateDoctor = (id: string) => {
     setDoctorId(id);
@@ -236,7 +235,8 @@ const ReceptionistCreateAppointment = () => {
             {selectedTime} with{" "}
             {selectedDoctor
               ? `Dr. ${selectedDoctor.firstName} ${selectedDoctor.lastName}`
-              : "the selected doctor"}.
+              : "the selected doctor"}
+            .
           </p>
           <Button
             className="mt-7 bg-primary text-background hover:bg-primary/85"
@@ -276,85 +276,90 @@ const ReceptionistCreateAppointment = () => {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]">
-        <div className="grid gap-6">
-          <ServiceStep
-            services={services}
-            selectedServiceId={serviceId}
-            onSelect={updateService}
-          />
-          <DoctorStep
-            serviceSelected={Boolean(serviceId)}
-            search={doctorSearch}
-            onSearchChange={setDoctorSearch}
-            doctors={doctors}
-            selectedDoctorId={doctorId}
-            loading={doctorQuery.isLoading}
-            onSelect={updateDoctor}
-          />
-          <DateTimeStep
-            serviceSelected={Boolean(service)}
-            weekStart={weekStart}
-            weekDates={weekDates}
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            slots={slots}
-            loading={availabilityQuery.isLoading}
-            error={availabilityQuery.isError}
-            onWeekChange={(offset) => {
-              const date = parseDateKey(weekStart);
-              date.setDate(date.getDate() + offset);
-              setWeekStart(formatDateKey(date));
-            }}
-            onDateSelect={updateDate}
-            onTimeSelect={setSelectedTime}
-            parseDateKey={parseDateKey}
-            formatDateKey={formatDateKey}
-            dateLabel={dateLabel}
-          />
-          <PatientStep
-            mode={patientMode}
-            search={patientSearch}
-            patients={patients}
-            selectedPatient={selectedPatient}
-            newPatient={newPatient}
-            loading={patientQuery.isLoading}
-            onModeChange={(mode) => {
-              setPatientMode(mode);
-              if (mode === "existing") setNewPatient(emptyNewPatient);
-              else setSelectedPatient(null);
-            }}
-            onSearchChange={(value) => {
-              setPatientSearch(value);
-              setSelectedPatient(null);
-            }}
-            onSelect={setSelectedPatient}
-            onNewPatientChange={(field, value) =>
-              setNewPatient((current) => ({ ...current, [field]: value }))
-            }
-          />
-        </div>
-
-        <aside className="lg:sticky lg:top-24 lg:self-start">
-          <ReviewStep
-            doctor={selectedDoctor}
-            service={service}
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            patientMode={patientMode}
-            selectedPatient={selectedPatient}
-            newPatient={newPatient}
-            notes={notes}
-            notification={notification}
-            canContinue={canContinue}
-            isSubmitting={createAppointmentMutation.isPending}
-            errorMessage={createAppointmentMutation.error?.message}
-            onNotesChange={setNotes}
-            onNotificationChange={setNotification}
-            onConfirm={createAppointment}
-            dateLabel={dateLabel}
-          />
-        </aside>
+      <div className="grid gap-6">
+        <ServiceStep
+          services={services}
+          selectedServiceId={serviceId}
+          onSelect={updateService}
+        />
+        <DoctorStep
+          serviceSelected={Boolean(serviceId)}
+          search={doctorSearch}
+          onSearchChange={setDoctorSearch}
+          doctors={doctors}
+          selectedDoctorId={doctorId}
+          loading={doctorQuery.isLoading}
+          onSelect={updateDoctor}
+        />
+        <DateTimeStep
+          serviceSelected={Boolean(service)}
+          weekStart={weekStart}
+          weekDates={weekDates}
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          slots={slots}
+          availableDates={availabilityQuery.data?.data ?? []}
+          loading={availabilityQuery.isLoading}
+          error={availabilityQuery.isError}
+          onWeekChange={(offset) => {
+            const date = parseDateKey(weekStart);
+            date.setDate(date.getDate() + offset);
+            setWeekStart(formatDateKey(date));
+          }}
+          onDateSelect={updateDate}
+          onTimeSelect={setSelectedTime}
+          parseDateKey={parseDateKey}
+          formatDateKey={formatDateKey}
+          dateLabel={dateLabel}
+        />
+        <PatientStep
+          mode={patientMode}
+          search={patientSearch}
+          searchField={patientSearchField}
+          patients={patients}
+          selectedPatient={selectedPatient}
+          newPatient={newPatient}
+          loading={patientQuery.isLoading}
+          onModeChange={(mode) => {
+            setPatientMode(mode);
+            if (mode === "existing") setNewPatient(emptyNewPatient);
+            else setSelectedPatient(null);
+          }}
+          onSearchChange={(value) => {
+            setPatientSearch(value);
+            setSelectedPatient(null);
+          }}
+          onSearchFieldChange={(value) => {
+            setPatientSearchField(value);
+            setSelectedPatient(null);
+          }}
+          onSearch={() => {
+            setSubmittedPatientSearch(patientSearch.trim());
+            setSelectedPatient(null);
+          }}
+          onSelect={setSelectedPatient}
+          onNewPatientChange={(field, value) =>
+            setNewPatient((current) => ({ ...current, [field]: value }))
+          }
+        />
+        <ReviewStep
+          doctor={selectedDoctor}
+          service={service}
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          patientMode={patientMode}
+          selectedPatient={selectedPatient}
+          newPatient={newPatient}
+          notes={notes}
+          notification={notification}
+          canContinue={canContinue}
+          isSubmitting={createAppointmentMutation.isPending}
+          errorMessage={createAppointmentMutation.error?.message}
+          onNotesChange={setNotes}
+          onNotificationChange={setNotification}
+          onConfirm={createAppointment}
+          dateLabel={dateLabel}
+        />
       </div>
     </main>
   );

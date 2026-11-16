@@ -23,6 +23,11 @@ export type AppointmentStatus =
   | "completed"
   | "cancelled"
   | "no_show";
+export type AppointmentPatientSearchField =
+  | "name"
+  | "pesel"
+  | "email"
+  | "phone";
 
 export type ClientAppointment = {
   id: string;
@@ -64,6 +69,8 @@ export function useListAppointmentsQuery(
   patientName = "",
   doctorId = "",
   serviceId = "",
+  patientSearchField: AppointmentPatientSearchField = "name",
+  status = "",
 ) {
   return useQuery({
     queryKey: [
@@ -75,12 +82,25 @@ export function useListAppointmentsQuery(
       patientName,
       doctorId,
       serviceId,
+      patientSearchField,
+      status,
     ],
     queryFn: () => {
       const params = new URLSearchParams({ from, to, limit: "100" });
-      if (patientName.trim()) params.set("patientName", patientName.trim());
+      if (patientName.trim()) {
+        const patientSearchParam =
+          patientSearchField === "name"
+            ? "patientName"
+            : patientSearchField === "pesel"
+              ? "patientPesel"
+              : patientSearchField === "email"
+                ? "patientEmail"
+                : "patientPhone";
+        params.set(patientSearchParam, patientName.trim());
+      }
       if (doctorId) params.set("doctorId", doctorId);
       if (serviceId) params.set("serviceId", serviceId);
+      if (status) params.set("status", status);
       return request<AppointmentListResponse>(
         `/dashboard/appointment/list?${params.toString()}`,
       );

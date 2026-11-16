@@ -1,8 +1,10 @@
-import type { ClientDoctor } from "@/pages/dashboard/admin/doctor/hooks";
 import type { ClientPatientListItem } from "@/pages/dashboard/admin/patient/hooks";
 import type { ClientService } from "@/pages/dashboard/hooks/services/types";
+import type { AvailableDate } from "../../hooks";
+import type { ClientDoctor } from "@/pages/dashboard/hooks/doctor/types";
 
 export type PatientMode = "existing" | "new";
+export type PatientSearchField = "name" | "email" | "phone" | "pesel";
 
 export type NewPatient = {
   firstName: string;
@@ -42,6 +44,7 @@ export type DateTimeStepProps = {
   selectedDate: string;
   selectedTime: string;
   slots: string[];
+  availableDates: AvailableDate[];
   loading: boolean;
   error?: boolean;
   onWeekChange: (offset: number) => void;
@@ -55,19 +58,22 @@ export type DateTimeStepProps = {
 export type PatientStepProps = {
   mode: PatientMode;
   search: string;
+  searchField: PatientSearchField;
   patients: ClientPatientListItem[];
   selectedPatient: ClientPatientListItem | null;
   newPatient: NewPatient;
   loading: boolean;
   onModeChange: (mode: PatientMode) => void;
   onSearchChange: (value: string) => void;
+  onSearchFieldChange: (value: PatientSearchField) => void;
+  onSearch: () => void;
   onSelect: (patient: ClientPatientListItem) => void;
   onNewPatientChange: (field: keyof NewPatient, value: string) => void;
 };
 
 export type ReviewStepProps = {
   doctor:
-    | (Pick<ClientDoctor, "id" | "firstName" | "lastName" | "specialization">)
+    | Pick<ClientDoctor, "id" | "firstName" | "lastName" | "specialization">
     | undefined;
   service: ClientService | undefined;
   selectedDate: string;

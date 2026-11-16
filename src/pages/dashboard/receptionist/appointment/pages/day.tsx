@@ -4,17 +4,19 @@ import {
   ChevronRight,
   Clock,
   Plus,
-  Search,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { AppointmentCard } from "../components/appointment-card";
 import { AppointmentFilterDropdown } from "../components/appointment-filter-dropdown";
+import { AppointmentPatientSearch } from "../components/appointment-patient-search";
 import { hours } from "../constants";
-import { useListAppointmentsQuery } from "../hooks";
+import {
+  useListAppointmentsQuery,
+  type AppointmentPatientSearchField,
+} from "../hooks";
 import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
 import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";
 
@@ -35,9 +37,13 @@ const formatTime = (date: Date) =>
 const DashboardAppointmentDay = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(() => new Date());
-  const [search, setSearch] = useState("");
+  const [patientSearch, setPatientSearch] = useState("");
+  const [patientSearchField, setPatientSearchField] =
+    useState<AppointmentPatientSearchField>("name");
+  const [submittedPatientSearch, setSubmittedPatientSearch] = useState("");
   const [doctorId, setDoctorId] = useState("");
   const [serviceId, setServiceId] = useState("");
+  const [status, setStatus] = useState("");
   const doctorsQuery = useListDoctorQuery("", 100);
   const servicesQuery = useListServiceQuery("", 1, 100);
 
@@ -50,9 +56,11 @@ const DashboardAppointmentDay = () => {
   const appointmentsQuery = useListAppointmentsQuery(
     formatDate(selectedDate),
     formatDate(nextDate),
-    search,
+    submittedPatientSearch,
     doctorId,
     serviceId,
+    patientSearchField,
+    status,
   );
   const appointments = useMemo(
     () => appointmentsQuery.data?.data ?? [],
@@ -87,7 +95,7 @@ const DashboardAppointmentDay = () => {
 
   return (
     <div className="min-h-screen bg-background text-primary">
-      <main className="mx-4 w-full">
+      <main className="mx-auto w-full max-w-[1600px] px-5 py-8 sm:px-8 lg:px-10">
         <section className="mb-8">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
@@ -165,42 +173,55 @@ const DashboardAppointmentDay = () => {
             </span>
           </div>
 
-          <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
-            <Input
-              placeholder="Search patients..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              className="h-10 rounded-[5px] border-primary/10 bg-background pl-9"
+          <div className="flex flex-col gap-3 rounded-[5px] border border-primary/10 bg-primary/2 p-3">
+            <AppointmentPatientSearch
+              value={patientSearch}
+              field={patientSearchField}
+              onChange={setPatientSearch}
+              onFieldChange={setPatientSearchField}
+              onSearch={() => setSubmittedPatientSearch(patientSearch.trim())}
             />
-          </div>
-          <div className="flex flex-col gap-3 rounded-[5px] border border-primary/10 bg-primary/[0.02] p-3 sm:flex-row">
-            <AppointmentFilterDropdown
-              label="Doctor"
-              placeholder="All doctors"
-              value={doctorId}
-              onChange={setDoctorId}
-              disabled={doctorsQuery.isLoading || doctorsQuery.isError}
-              options={
-                doctorsQuery.data?.data.map((doctor) => ({
-                  value: doctor.id,
-                  label: `Dr. ${doctor.firstName} ${doctor.lastName}`,
-                })) ?? []
-              }
-            />
-            <AppointmentFilterDropdown
-              label="Service"
-              placeholder="All services"
-              value={serviceId}
-              onChange={setServiceId}
-              disabled={servicesQuery.isLoading || servicesQuery.isError}
-              options={
-                servicesQuery.data?.data.map((service) => ({
-                  value: service.id,
-                  label: service.name,
-                })) ?? []
-              }
-            />
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <AppointmentFilterDropdown
+                label="Doctor"
+                placeholder="All doctors"
+                value={doctorId}
+                onChange={setDoctorId}
+                disabled={doctorsQuery.isLoading || doctorsQuery.isError}
+                options={
+                  doctorsQuery.data?.data.map((doctor) => ({
+                    value: doctor.id,
+                    label: `Dr. ${doctor.firstName} ${doctor.lastName}`,
+                  })) ?? []
+                }
+              />
+              <AppointmentFilterDropdown
+                label="Service"
+                placeholder="All services"
+                value={serviceId}
+                onChange={setServiceId}
+                disabled={servicesQuery.isLoading || servicesQuery.isError}
+                options={
+                  servicesQuery.data?.data.map((service) => ({
+                    value: service.id,
+                    label: service.name,
+                  })) ?? []
+                }
+              />
+              <AppointmentFilterDropdown
+                label="Status"
+                placeholder="All statuses"
+                value={status}
+                onChange={setStatus}
+                options={[
+                  { value: "scheduled", label: "Scheduled" },
+                  { value: "confirmed", label: "Confirmed" },
+                  { value: "completed", label: "Completed" },
+                  { value: "cancelled", label: "Cancelled" },
+                  { value: "no_show", label: "No-show" },
+                ]}
+              />
+            </div>
           </div>
         </section>
 

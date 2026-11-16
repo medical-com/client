@@ -41,9 +41,10 @@ export function useFindOnePatientQuery(id?: string) {
 }
 
 export function useListPatientQuery(
-  searchField: "name" | "email" | "phone",
+  searchField: "name" | "email" | "phone" | "pesel",
   search: string,
   page = 1,
+  enabled = true,
 ) {
   return useQuery({
     queryKey: ["dashboard", "patient", "list", searchField, search, page],
@@ -66,6 +67,10 @@ export function useListPatientQuery(
 
         if (searchField === "phone") {
           params.set("phoneNumber", normalizedSearch);
+        }
+
+        if (searchField === "pesel") {
+          params.set("pesel", normalizedSearch);
         }
       }
 
@@ -93,6 +98,7 @@ export function useListPatientQuery(
         throw error;
       }
     },
+    enabled,
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
