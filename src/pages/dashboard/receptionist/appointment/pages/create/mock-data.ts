@@ -1,4 +1,4 @@
-import type { ClientDoctor } from "@/pages/dashboard/admin/doctor/hooks";
+import type { ClientDoctor } from "@/pages/dashboard/hooks/doctor/types";
 import type { ClientService } from "@/pages/dashboard/hooks/services/types";
 
 export const mockDoctors: ClientDoctor[] = [

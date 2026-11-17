@@ -10,7 +10,7 @@ import {
 import type {
   DoctorSchedule,
   DoctorScheduleException,
-} from "@/pages/dashboard/admin/doctor/hooks";
+} from "@/pages/dashboard/hooks/doctor/types";
 
 const HOURS = Array.from({ length: 11 }, (_, index) => index + 8);
 

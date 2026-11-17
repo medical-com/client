@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { ClientDoctor } from "../hooks";
+import type { ClientDoctor } from "@/pages/dashboard/hooks/doctor/types";
 
 type DoctorFormValues = Pick<
   ClientDoctor,
@@ -89,21 +89,67 @@ export const DoctorEditForm = ({
                 {error}
               </p>
             )}
-            <FormField label="First name" value={formValues.firstName} onChange={(value) => updateFormValue("firstName", value)} />
-            <FormField label="Last name" value={formValues.lastName} onChange={(value) => updateFormValue("lastName", value)} />
-            <FormField label="Specialization" value={formValues.specialization} onChange={(value) => updateFormValue("specialization", value)} />
-            <FormField label="License number" value={formValues.licenseNumber} onChange={(value) => updateFormValue("licenseNumber", value)} />
-            <FormField label="Email" type="email" value={formValues.email} onChange={(value) => updateFormValue("email", value)} />
-            <FormField label="Phone" type="tel" value={formValues.phone} onChange={(value) => updateFormValue("phone", value)} />
-            <FormField label="Date of birth" type="date" value={formValues.dateOfBirth} onChange={(value) => updateFormValue("dateOfBirth", value)} />
-            <FormField label="PESEL" value={formValues.pesel} onChange={(value) => updateFormValue("pesel", value)} />
+            <FormField
+              label="First name"
+              value={formValues.firstName}
+              onChange={(value) => updateFormValue("firstName", value)}
+            />
+            <FormField
+              label="Last name"
+              value={formValues.lastName}
+              onChange={(value) => updateFormValue("lastName", value)}
+            />
+            <FormField
+              label="Specialization"
+              value={formValues.specialization}
+              onChange={(value) => updateFormValue("specialization", value)}
+            />
+            <FormField
+              label="License number"
+              value={formValues.licenseNumber}
+              onChange={(value) => updateFormValue("licenseNumber", value)}
+            />
+            <FormField
+              label="Email"
+              type="email"
+              value={formValues.email}
+              onChange={(value) => updateFormValue("email", value)}
+            />
+            <FormField
+              label="Phone"
+              type="tel"
+              value={formValues.phone}
+              onChange={(value) => updateFormValue("phone", value)}
+            />
+            <FormField
+              label="Date of birth"
+              type="date"
+              value={formValues.dateOfBirth}
+              onChange={(value) => updateFormValue("dateOfBirth", value)}
+            />
+            <FormField
+              label="PESEL"
+              value={formValues.pesel}
+              onChange={(value) => updateFormValue("pesel", value)}
+            />
           </form>
 
           <div className="flex flex-col-reverse gap-2 border-t border-primary/10 p-6 sm:flex-row sm:justify-end">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving} className="rounded-[5px] border-primary/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isSaving}
+              className="rounded-[5px] border-primary/10"
+            >
               Cancel
             </Button>
-            <Button type="submit" form="edit-doctor-form" disabled={isSaving} className="rounded-[5px]">
+            <Button
+              type="submit"
+              form="edit-doctor-form"
+              disabled={isSaving}
+              className="rounded-[5px]"
+            >
               {isSaving ? "Saving..." : "Save changes"}
             </Button>
           </div>

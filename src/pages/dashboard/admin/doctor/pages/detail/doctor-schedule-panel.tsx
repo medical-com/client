@@ -8,7 +8,7 @@ import type {
   DoctorSchedule,
   DoctorSchedulePayload,
   UpdateDoctorSchedulePayload,
-} from "../../hooks";
+} from "@/pages/dashboard/hooks/doctor/types";
 
 const dayNames = [
   "Monday",

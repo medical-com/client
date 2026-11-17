@@ -8,7 +8,7 @@ import type {
   DoctorScheduleException,
   DoctorScheduleExceptionPayload,
   UpdateDoctorScheduleExceptionPayload,
-} from "../../hooks";
+} from "@/pages/dashboard/hooks/doctor/types";
 
 type ExceptionPanelProps = {
   doctorId: string;

@@ -2,7 +2,7 @@ import { Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DetailDataTable } from "@/components/detail-data-table";
-import type { ClientDoctor } from "../../hooks";
+import type { ClientDoctor } from "@/pages/dashboard/hooks/doctor/types";
 
 export const PersonalInfo = ({
   doctor,
@@ -25,9 +25,7 @@ export const PersonalInfo = ({
           <p className="text-xs font-extrabold tracking-[0.2em] text-accent">
             PERSONAL INFORMATION
           </p>
-          <h2 className="mt-2 font-serif text-2xl font-bold">
-            Doctor details
-          </h2>
+          <h2 className="mt-2 font-serif text-2xl font-bold">Doctor details</h2>
         </div>
         <Button
           type="button"
