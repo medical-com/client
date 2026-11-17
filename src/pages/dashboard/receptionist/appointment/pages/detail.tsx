@@ -9,7 +9,7 @@ import {
   useFindAppointmentQuery,
   useUpdateAppointmentStatusMutation,
   type AppointmentStatus,
-} from "../hooks";
+} from "@/pages/dashboard/hooks/appointments";
 
 const DashboardAppointment = () => {
   const navigate = useNavigate();

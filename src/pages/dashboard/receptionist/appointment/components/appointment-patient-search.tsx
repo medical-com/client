@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import type { AppointmentPatientSearchField } from "../hooks";
+import type { AppointmentPatientSearchField } from "@/pages/dashboard/hooks/appointments";
 
 type AppointmentPatientSearchProps = {
   value: string;

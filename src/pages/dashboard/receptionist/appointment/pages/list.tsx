@@ -13,7 +13,7 @@ import { hours } from "../constants";
 import {
   useListAppointmentsQuery,
   type AppointmentPatientSearchField,
-} from "../hooks";
+} from "@/pages/dashboard/hooks/appointments";
 import type { Day } from "../types";
 import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
 import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";

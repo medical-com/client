@@ -33,6 +33,10 @@ import DashboardService from "@/pages/dashboard/admin/service/pages/detail";
 import ReceptionistDashboard from "@/pages/dashboard/receptionist";
 import ReceptionistCreateAppointment from "@/pages/dashboard/receptionist/appointment/pages/create";
 import DashboardAppointmentDay from "@/pages/dashboard/receptionist/appointment/pages/day";
+import DoctorDashboard from "@/pages/dashboard/doctor";
+import DoctorAppointments from "@/pages/dashboard/doctor/appointment/pages/list";
+import DoctorAppointmentDay from "@/pages/dashboard/doctor/appointment/pages/day";
+import DoctorAppointment from "@/pages/dashboard/doctor/appointment/pages/one";
 import { AccountRole } from "./types/account.type";
 
 const AppRoutes = () => {
@@ -171,6 +175,28 @@ const AppRoutes = () => {
         },
       ],
     },
+    {
+      path: "/dashboard/doctor",
+      element: <RequireAuth roles={[AccountRole.DOCTOR]} />,
+      children: [
+        {
+          path: "",
+          element: <DoctorDashboard />,
+        },
+        {
+          path: "appointments",
+          element: <DoctorAppointments />,
+        },
+        {
+          path: "appointments/day",
+          element: <DoctorAppointmentDay />,
+        },
+        {
+          path: "appointments/:id",
+          element: <DoctorAppointment />,
+        },
+      ],
+    },
   ]);
 
   return routes;
@@ -179,7 +205,9 @@ const AppRoutes = () => {
 const AppLayout = () => {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    return window.localStorage.getItem("dashboard-sidebar-collapsed") === "true";
+    return (
+      window.localStorage.getItem("dashboard-sidebar-collapsed") === "true"
+    );
   });
 
   const isDashboardRoute = location.pathname.startsWith("/dashboard");

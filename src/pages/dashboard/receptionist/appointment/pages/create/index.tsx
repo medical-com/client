@@ -16,8 +16,10 @@ import { ReviewStep } from "./components/review-step";
 import { ServiceStep } from "./components/service-step";
 import type { NewPatient, PatientMode, PatientSearchField } from "./types";
 import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";
-import { useListAvailableDatesQuery } from "../../hooks";
-import { useCreateAppointmentMutation } from "../../hooks";
+import {
+  useCreateAppointmentMutation,
+  useListAvailableDatesQuery,
+} from "@/pages/dashboard/hooks/appointments";
 import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
 
 const emptyNewPatient: NewPatient = {
