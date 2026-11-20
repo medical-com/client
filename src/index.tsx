@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { DashboardNavbar } from "@/components/layout/dashboard-navbar";
 import { Footer } from "@/components/layout/footer";
 import { RequireAuth } from "@/components/auth/require-auth";
+import { AccountRole } from "@/types/account.type";
 
 import Home from "@/pages/home";
 import About from "@/pages/about";
@@ -37,7 +38,7 @@ import DoctorDashboard from "@/pages/dashboard/doctor";
 import DoctorAppointments from "@/pages/dashboard/doctor/appointment/pages/list";
 import DoctorAppointmentDay from "@/pages/dashboard/doctor/appointment/pages/day";
 import DoctorAppointment from "@/pages/dashboard/doctor/appointment/pages/one";
-import { AccountRole } from "./types/account.type";
+import DoctorPatientRecords from "@/pages/dashboard/doctor/patient/pages/list";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -194,6 +195,10 @@ const AppRoutes = () => {
         {
           path: "appointments/:id",
           element: <DoctorAppointment />,
+        },
+        {
+          path: "patients",
+          element: <DoctorPatientRecords />,
         },
       ],
     },

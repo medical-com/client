@@ -29,6 +29,26 @@ export type AppointmentPatientSearchField =
   | "email"
   | "phone";
 
+export type AppointmentMedicalRecord = {
+  id: string;
+  appointment_id: string;
+  diagnosis: string;
+  prescription: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type AppointmentMedicalRecordListResponse = {
+  data: AppointmentMedicalRecord[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+  };
+};
+
 export type ClientAppointment = {
   id: string;
   startAt: string;
@@ -140,6 +160,110 @@ export function useUpdateAppointmentStatusMutation() {
       });
       queryClient.invalidateQueries({
         queryKey: ["dashboard", "appointment", "list"],
+      });
+    },
+  });
+}
+
+export function useFindAppointmentMedicalRecordQuery(appointmentId?: string) {
+  return useQuery({
+    queryKey: [
+      "dashboard",
+      "appointment",
+      "medical-record",
+      "find-one",
+      appointmentId,
+    ],
+    queryFn: () =>
+      request<AppointmentMedicalRecord>(
+        `/dashboard/appointment/medical-record/find-one?appointmentId=${encodeURIComponent(appointmentId ?? "")}`,
+      ),
+    enabled: Boolean(appointmentId),
+    retry: false,
+  });
+}
+
+export function useListAppointmentMedicalRecordsQuery(page = 1, limit = 100) {
+  return useQuery({
+    queryKey: [
+      "dashboard",
+      "appointment",
+      "medical-record",
+      "list",
+      page,
+      limit,
+    ],
+    queryFn: () =>
+      request<AppointmentMedicalRecordListResponse>(
+        `/dashboard/appointment/medical-record/list?${new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        }).toString()}`,
+      ),
+    retry: false,
+  });
+}
+
+export function useCreateAppointmentMedicalRecordMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      appointmentId: string;
+      diagnosis: string;
+      prescription: string;
+    }) =>
+      request<AppointmentMedicalRecord>(
+        "/dashboard/appointment/medical-record/create",
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+        },
+      ),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          "dashboard",
+          "appointment",
+          "medical-record",
+          "find-one",
+          variables.appointmentId,
+        ],
+      });
+    },
+  });
+}
+
+export function useUpdateAppointmentMedicalRecordMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      id: string;
+      appointmentId: string;
+      diagnosis: string;
+      prescription: string;
+    }) =>
+      request<AppointmentMedicalRecord>(
+        "/dashboard/appointment/medical-record/update",
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            id: data.id,
+            diagnosis: data.diagnosis,
+            prescription: data.prescription,
+          }),
+        },
+      ),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          "dashboard",
+          "appointment",
+          "medical-record",
+          "find-one",
+          variables.appointmentId,
+        ],
       });
     },
   });

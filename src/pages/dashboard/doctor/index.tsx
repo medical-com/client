@@ -1,42 +1,55 @@
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, UserRoundSearch } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DoctorDashboard = () => {
   return (
     <div className="min-h-screen bg-background text-primary">
-      <main className="mx-auto w-full max-w-360 px-5 py-10 sm:px-8 lg:px-10">
-        <section className="mb-10">
-          <p className="mb-4 text-xs font-extrabold tracking-[0.22em] text-accent">
+      <main className="mx-auto w-full max-w-280 px-5 py-10 sm:px-8 lg:px-10">
+        <section className="border-b border-primary/10 pb-9">
+          <p className="mb-3 text-xs font-extrabold tracking-[0.22em] text-accent">
             DOCTOR DASHBOARD
           </p>
 
           <h1 className="font-serif text-4xl font-bold leading-tight tracking-[-0.04em] sm:text-5xl">
-            Welcome to your dashboard.
+            Good day, Doctor.
           </h1>
 
-          <p className="mt-4 max-w-2xl font-serif text-lg text-primary/60">
-            Review your schedule, manage patient visits, and complete
-            appointments from one place.
+          <p className="mt-3 max-w-xl text-sm leading-6 text-primary/55">
+            Review today's visits or open a patient record.
           </p>
         </section>
 
-        <section className="mt-10 border-t border-primary/10 pt-6">
-          <p className="mb-4 text-xs font-extrabold tracking-[0.2em] text-accent">
-            QUICK ACTIONS
+        <section className="pt-7">
+          <p className="mb-2 text-xs font-extrabold tracking-[0.2em] text-primary/40">
+            WORKSPACE
           </p>
 
-          <Link
-            to="/dashboard/doctor/appointments"
-            className="group flex max-w-md items-center gap-4 rounded-[5px] border border-primary/10 p-5 text-left transition-colors hover:bg-primary hover:text-background"
-          >
-            <CalendarCheck className="size-5 text-accent" />
-            <span>
-              <span className="block font-semibold">My appointments</span>
-              <span className="mt-1 block text-xs text-primary/50 group-hover:text-background/60">
-                Open your weekly calendar
+          <div>
+            <Link
+              to="/dashboard/doctor/appointments"
+              className="group flex items-center justify-between border-b border-primary/10 py-5"
+            >
+              <span className="flex items-center gap-3">
+                <CalendarCheck className="size-5 text-accent" />
+                <span className="font-serif text-xl font-bold">My appointments</span>
               </span>
-            </span>
-          </Link>
+              <span className="text-xs font-bold text-primary/40 transition-transform group-hover:translate-x-1 group-hover:text-primary">
+                Open
+              </span>
+            </Link>
+            <Link
+              to="/dashboard/doctor/patients"
+              className="group flex items-center justify-between border-b border-primary/10 py-5"
+            >
+              <span className="flex items-center gap-3">
+                <UserRoundSearch className="size-5 text-accent" />
+                <span className="font-serif text-xl font-bold">Patient records</span>
+              </span>
+              <span className="text-xs font-bold text-primary/40 transition-transform group-hover:translate-x-1 group-hover:text-primary">
+                Open
+              </span>
+            </Link>
+          </div>
         </section>
       </main>
     </div>

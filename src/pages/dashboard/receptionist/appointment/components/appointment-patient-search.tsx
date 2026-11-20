@@ -17,6 +17,8 @@ type AppointmentPatientSearchProps = {
   onChange: (value: string) => void;
   onFieldChange: (value: AppointmentPatientSearchField) => void;
   onSearch: () => void;
+  showSearchButton?: boolean;
+  showAllButton?: boolean;
 };
 
 export const AppointmentPatientSearch = ({
@@ -25,6 +27,8 @@ export const AppointmentPatientSearch = ({
   onChange,
   onFieldChange,
   onSearch,
+  showSearchButton = true,
+  showAllButton = true,
 }: AppointmentPatientSearchProps) => {
   const options: Array<{
     value: AppointmentPatientSearchField;
@@ -38,10 +42,22 @@ export const AppointmentPatientSearch = ({
   const selectedLabel = options.find((option) => option.value === field)?.label;
 
   return (
-    <div className="flex gap-2 flex-col sm:items-center md:flex-row">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="relative min-w-0 flex-1">
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
+        <Input
+          placeholder={`Search by ${field === "phone" ? "phone number" : field}`}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") onSearch();
+          }}
+          className="h-9 rounded-[5px] border-primary/10 bg-background pl-9 text-sm"
+        />
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex h-10 w-full shrink-0 items-center justify-between gap-3 rounded-[5px] border border-primary/15 bg-background px-3 text-left text-sm font-medium shadow-sm outline-none transition-colors hover:border-primary/30 focus:border-accent focus:ring-2 focus:ring-accent/20 sm:w-40"
+          className="flex h-9 w-full shrink-0 items-center justify-between gap-3 rounded-[5px] border border-primary/15 bg-background px-3 text-left text-xs font-medium outline-none transition-colors hover:border-primary/30 focus:border-accent focus:ring-2 focus:ring-accent/20 sm:w-32"
           aria-label="Patient search field"
         >
           <span className="truncate">{selectedLabel}</span>
@@ -66,36 +82,29 @@ export const AppointmentPatientSearch = ({
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <div className="relative min-w-0 flex-1">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/40" />
-        <Input
-          placeholder={`Search by ${field === "phone" ? "phone number" : field}`}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") onSearch();
+
+      {showSearchButton && (
+        <button
+          type="button"
+          onClick={onSearch}
+          disabled={!value.trim()}
+          className="h-9 w-full shrink-0 rounded-[5px] bg-primary px-3 text-xs font-bold text-background transition-colors hover:bg-primary/85 disabled:cursor-not-allowed disabled:opacity-50 sm:w-24"
+        >
+          Search
+        </button>
+      )}
+      {showAllButton && (
+        <button
+          type="button"
+          onClick={() => {
+            onChange("");
+            onSearch();
           }}
-          className="h-10 rounded-[5px] border-primary/10 bg-background pl-9"
-        />
-      </div>
-      <button
-        type="button"
-        onClick={onSearch}
-        disabled={!value.trim()}
-        className="h-10 w-full shrink-0 rounded-[5px] bg-primary px-2 text-xs font-bold text-background transition-colors hover:bg-primary/85 disabled:cursor-not-allowed disabled:opacity-50 sm:w-40"
-      >
-        Search
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          onChange("");
-          onSearch();
-        }}
-        className="h-10 w-full shrink-0 rounded-[5px] bg-primary px-2 text-xs font-bold text-background transition-colors hover:bg-primary/85 disabled:cursor-not-allowed disabled:opacity-50 sm:w-40"
-      >
-        Show All
-      </button>
+          className="h-9 w-full shrink-0 rounded-[5px] border border-primary/15 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary/5 sm:w-24"
+        >
+          Show All
+        </button>
+      )}
     </div>
   );
 };

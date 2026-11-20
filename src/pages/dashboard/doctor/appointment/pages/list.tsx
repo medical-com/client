@@ -119,7 +119,7 @@ const DoctorAppointments = () => {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-[5px] border border-primary/10">
+        <section className="border-y border-primary/10">
           <div className="overflow-x-auto">
             <div className="min-w-[980px]">
               <div className="grid grid-cols-[72px_repeat(7,minmax(130px,1fr))] border-b border-primary/10">
@@ -183,10 +183,10 @@ const DoctorAppointments = () => {
                               )
                             }
                             style={{ top }}
-                            className={`absolute left-1 right-1 min-h-20 rounded-sm border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--color-highlight)] ${
+                            className={`absolute left-1 right-1 min-h-20 rounded-[3px] border-l-2 p-3 text-left transition hover:bg-primary/[0.06] ${
                               appointment.status === "completed"
-                                ? "border-blue-300 bg-blue-100"
-                                : "border-emerald-300 bg-emerald-100"
+                                ? "border-l-primary/30 bg-primary/[0.03]"
+                                : "border-l-accent bg-accent/[0.06]"
                             }`}
                           >
                             <div className="flex items-start justify-between gap-2">

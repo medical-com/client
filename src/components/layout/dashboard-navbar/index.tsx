@@ -20,6 +20,12 @@ export const DashboardNavbar = ({
   collapsed,
   onToggle,
 }: DashboardNavbarProps) => {
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  }).toUpperCase();
+
   return (
     <>
       {/* Desktop sidebar */}
@@ -118,7 +124,7 @@ export const DashboardNavbar = ({
         {/* Date */}
         <div className="flex-1 lg:flex-none">
           <p className="text-center text-xs font-extrabold tracking-[0.18em] text-accent lg:text-left">
-            THURSDAY · AUGUST 27
+            {today}
           </p>
         </div>
 

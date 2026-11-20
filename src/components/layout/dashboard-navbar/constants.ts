@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Stethoscope,
   Users,
+  UserRoundSearch,
   BriefcaseMedical,
   CalendarCheck,
   ClipboardList,
@@ -58,5 +59,10 @@ export const DOCTOR_NAVIGATION = [
     label: "My appointments",
     href: "/dashboard/doctor/appointments",
     icon: ClipboardList,
+  },
+  {
+    label: "Patient records",
+    href: "/dashboard/doctor/patients",
+    icon: UserRoundSearch,
   },
 ];
