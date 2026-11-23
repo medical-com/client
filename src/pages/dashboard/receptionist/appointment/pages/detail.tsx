@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Copy } from "lucide-react";
 
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -9,7 +9,8 @@ import {
   useFindAppointmentQuery,
   useUpdateAppointmentStatusMutation,
   type AppointmentStatus,
-} from "../hooks";
+} from "@/pages/dashboard/hooks/appointments";
+import { Button } from "@/components/ui/button";
 
 const DashboardAppointment = () => {
   const navigate = useNavigate();
@@ -47,6 +48,29 @@ const DashboardAppointment = () => {
     }
   };
 
+  const recreateAppointment = () => {
+    const dateKey = [
+      start.getFullYear(),
+      String(start.getMonth() + 1).padStart(2, "0"),
+      String(start.getDate()).padStart(2, "0"),
+    ].join("-");
+    const params = new URLSearchParams({
+      doctorId: appointment.doctor.id,
+      serviceId: appointment.service.id,
+      patientId: appointment.patient.id,
+      date: dateKey,
+      time: start.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
+    });
+    if (appointment.notes) params.set("notes", appointment.notes);
+    navigate(
+      `/dashboard/receptionist/appointments/create?${params.toString()}`,
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-primary">
       <main className="mx-auto w-full max-w-360 px-5 py-10 sm:px-8 lg:px-10">
@@ -82,7 +106,18 @@ const DashboardAppointment = () => {
               </p>
             </div>
 
-            <StatusBadge status={appointment.status} />
+            <div className="flex flex-wrap items-center gap-3">
+              <StatusBadge status={appointment.status} />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={recreateAppointment}
+                className="rounded-[5px] border-primary/15"
+              >
+                <Copy className="mr-2 size-4" />
+                Recreate appointment
+              </Button>
+            </div>
           </div>
         </section>
 

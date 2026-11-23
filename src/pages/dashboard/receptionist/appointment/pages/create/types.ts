@@ -1,6 +1,6 @@
 import type { ClientPatientListItem } from "@/pages/dashboard/admin/patient/hooks";
 import type { ClientService } from "@/pages/dashboard/hooks/services/types";
-import type { AvailableDate } from "../../hooks";
+import type { AvailableDate } from "@/pages/dashboard/hooks/appointments";
 import type { ClientDoctor } from "@/pages/dashboard/hooks/doctor/types";
 
 export type PatientMode = "existing" | "new";

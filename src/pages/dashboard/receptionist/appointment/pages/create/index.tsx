@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 import {
   useListPatientQuery,
+  useFindOnePatientQuery,
   type ClientPatientListItem,
 } from "@/pages/dashboard/admin/patient/hooks";
 import { mockDoctors, mockServices } from "./mock-data";
@@ -16,8 +17,10 @@ import { ReviewStep } from "./components/review-step";
 import { ServiceStep } from "./components/service-step";
 import type { NewPatient, PatientMode, PatientSearchField } from "./types";
 import { useListServiceQuery } from "@/pages/dashboard/hooks/services/query";
-import { useListAvailableDatesQuery } from "../../hooks";
-import { useCreateAppointmentMutation } from "../../hooks";
+import {
+  useCreateAppointmentMutation,
+  useListAvailableDatesQuery,
+} from "@/pages/dashboard/hooks/appointments";
 import { useListDoctorQuery } from "@/pages/dashboard/hooks/doctor/query";
 
 const emptyNewPatient: NewPatient = {
@@ -63,13 +66,16 @@ const ReceptionistCreateAppointment = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const preselectedDoctorId = searchParams.get("doctorId") ?? undefined;
+  const preselectedServiceId = searchParams.get("serviceId") ?? "";
+  const preselectedPatientId = searchParams.get("patientId") ?? "";
+  const preselectedNotes = searchParams.get("notes") ?? "";
   const preselectedDate = searchParams.get("date") ?? undefined;
   const preselectedTime = searchParams.get("time") ?? undefined;
   const initialDate = formatDateKey(getNextWeekday(preselectedDate));
 
   const [doctorSearch, setDoctorSearch] = useState("");
   const [doctorId, setDoctorId] = useState(preselectedDoctorId ?? "");
-  const [serviceId, setServiceId] = useState("");
+  const [serviceId, setServiceId] = useState(preselectedServiceId);
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [selectedTime, setSelectedTime] = useState(preselectedTime ?? "");
   const [weekStart, setWeekStart] = useState(initialDate);
@@ -81,7 +87,7 @@ const ReceptionistCreateAppointment = () => {
   const [selectedPatient, setSelectedPatient] =
     useState<ClientPatientListItem | null>(null);
   const [newPatient, setNewPatient] = useState(emptyNewPatient);
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(preselectedNotes);
   const [notification, setNotification] = useState(true);
   const [submitted, setSubmitted] = useState(false);
 
@@ -92,6 +98,9 @@ const ReceptionistCreateAppointment = () => {
     submittedPatientSearch,
     1,
     Boolean(submittedPatientSearch),
+  );
+  const preselectedPatientQuery = useFindOnePatientQuery(
+    preselectedPatientId || undefined,
   );
 
   const allDoctors = useMemo(() => {
@@ -163,6 +172,12 @@ const ReceptionistCreateAppointment = () => {
   useEffect(() => {
     if (selectedTime && !slots.includes(selectedTime)) setSelectedTime("");
   }, [selectedTime, slots]);
+
+  useEffect(() => {
+    if (preselectedPatientQuery.data) {
+      setSelectedPatient(preselectedPatientQuery.data);
+    }
+  }, [preselectedPatientQuery.data]);
 
   const patients = patientQuery.data?.data ?? [];
   const hasNewPatientData = Object.values(newPatient).every(

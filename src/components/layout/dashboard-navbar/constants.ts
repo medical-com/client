@@ -2,8 +2,10 @@ import {
   LayoutDashboard,
   Stethoscope,
   Users,
+  UserRoundSearch,
   BriefcaseMedical,
   CalendarCheck,
+  ClipboardList,
 } from "lucide-react";
 
 export const ADMIN_NAVIGATION = [
@@ -44,5 +46,23 @@ export const RECEPTIONIST_NAVIGATION = [
     label: "Appointments",
     href: "/dashboard/receptionist/appointments",
     icon: CalendarCheck,
+  },
+];
+
+export const DOCTOR_NAVIGATION = [
+  {
+    label: "Dashboard",
+    href: "/dashboard/doctor",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "My appointments",
+    href: "/dashboard/doctor/appointments",
+    icon: ClipboardList,
+  },
+  {
+    label: "Patient records",
+    href: "/dashboard/doctor/patients",
+    icon: UserRoundSearch,
   },
 ];
