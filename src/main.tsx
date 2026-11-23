@@ -10,6 +10,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { Toaster, toast } from "react-hot-toast";
+import { AppointmentSocketListener } from "@/components/appointment-socket-listener";
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -28,6 +29,7 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
+      <AppointmentSocketListener />
       <App />
       <Toaster position="bottom-right" />
     </QueryClientProvider>
