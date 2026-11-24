@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const About = () => {
   return (
     <div className="bg-background text-primary">
@@ -187,9 +189,10 @@ const About = () => {
             team is ready to help.
           </p>
 
-          <button
-            type="button"
+          <Link
+            to="/contact"
             className="
+              inline-flex items-center
               mt-8 rounded-[5px]
               bg-primary px-6 py-4
               font-bold text-background
@@ -206,7 +209,7 @@ const About = () => {
             <span className="ml-8" aria-hidden="true">
               →
             </span>
-          </button>
+          </Link>
         </section>
       </main>
     </div>

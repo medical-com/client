@@ -64,7 +64,7 @@ export const Footer = () => {
 
             <nav className="flex flex-col gap-3 font-serif text-sm">
               <a
-                href="/appointments"
+                href="/contact"
                 className="w-fit transition-colors hover:text-accent"
               >
                 Book an appointment

@@ -9,13 +9,14 @@ import { AccountRole } from "@/types/account.type";
 
 import Home from "@/pages/home";
 import About from "@/pages/about";
+import Contact from "@/pages/contact";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import VerifyEmail from "@/pages/auth/verify-email";
 import ConfirmDoctorInvitation from "@/pages/auth/confirm-doctor";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
-import Appointment from "@/pages/appointment";
+//import Appointment from "@/pages/appointment";
 import Profile from "@/pages/profile";
 
 // Dashboard admin pages
@@ -80,9 +81,13 @@ const AppRoutes = () => {
       element: <About />,
     },
     {
-      path: "/appointment",
-      element: <Appointment />,
+      path: "/contact",
+      element: <Contact />,
     },
+    // {
+    //   path: "/appointment",
+    //   element: <Appointment />,
+    // },
     {
       path: "/profile",
       element: <RequireAuth />,

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const HeroContent = () => {
   return (
     <section className="text-primary">
@@ -31,9 +33,10 @@ const HeroContent = () => {
 
       <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
         {/* Primary CTA */}
-        <button
-          type="button"
+        <Link
+          to="/contact"
           className="
+            inline-flex items-center
             rounded-[5px]
             bg-primary px-5.5 py-4
             font-bold text-background
@@ -50,7 +53,7 @@ const HeroContent = () => {
           <span className="ml-8" aria-hidden="true">
             →
           </span>
-        </button>
+        </Link>
 
         {/* About button */}
         <a

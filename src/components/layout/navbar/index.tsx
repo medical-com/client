@@ -50,7 +50,7 @@ export const Navbar = () => {
       <nav className="flex h-full items-center gap-4 sm:gap-8">
         <NavLink href="/">Home</NavLink>
         <NavLink href="/about">About</NavLink>
-        <NavLink href="/appointment">Book an appointment</NavLink>
+        <NavLink href="/contact">Contact</NavLink>
       </nav>
 
       {/* Auth */}
