@@ -9,7 +9,7 @@ export const Footer = () => {
               href="/"
               className="font-serif text-3xl font-bold tracking-[-0.03em]"
             >
-              Medi<span className="text-accent">Care</span>
+              Medi<span className="text-accent">Cal</span>
             </a>
 
             <p className="mt-5 max-w-sm font-serif text-base leading-7 text-primary/60">
@@ -123,7 +123,7 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="mt-16 flex flex-col gap-5 border-t border-primary/10 pt-6 sm:mt-20 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-primary/45">
-            © {new Date().getFullYear()} MediCare Clinic. All rights reserved.
+            © {new Date().getFullYear()} Medical Clinic. All rights reserved.
           </p>
 
           <div className="flex gap-6 text-xs font-bold text-primary/50">
