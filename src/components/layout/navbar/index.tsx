@@ -30,7 +30,7 @@ export const Navbar = () => {
         "
       >
         <span className="text-xl sm:text-[27px]">
-          Medi<span className="text-accent">Care</span>
+          Medi<span className="text-accent">Cal</span>
         </span>
 
         <span
