@@ -29,8 +29,9 @@ const ReceptionistDashboard = () => {
             <div className="grid gap-3 sm:grid-cols-2">
               <QuickAction
                 icon={<Users className="size-5" />}
-                title="Find patient"
-                description="Search patient records"
+                title="Go to appointments"
+                description="Search appointments"
+                to="/dashboard/receptionist/appointments"
               />
             </div>
           </div>

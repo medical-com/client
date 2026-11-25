@@ -282,8 +282,7 @@ const Profile = () => {
                             : [
                                 {
                                   label: "Record",
-                                  value:
-                                    "No medical record has been added.",
+                                  value: "No medical record has been added.",
                                 },
                               ],
                         },

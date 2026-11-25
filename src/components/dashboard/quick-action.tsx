@@ -1,13 +1,24 @@
+import { useNavigate } from "react-router-dom";
+
 type QuickActionProps = {
   icon: React.ReactNode;
   title: string;
   description: string;
+  to: string;
 };
 
-export const QuickAction = ({ icon, title, description }: QuickActionProps) => {
+export const QuickAction = ({
+  icon,
+  title,
+  description,
+  to,
+}: QuickActionProps) => {
+  const navigate = useNavigate();
+
   return (
     <button
       type="button"
+      onClick={() => navigate(to)}
       className="
         group flex items-center gap-4
         rounded-[5px] border border-primary/10

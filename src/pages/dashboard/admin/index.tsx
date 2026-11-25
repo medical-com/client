@@ -31,6 +31,7 @@ const AdminDashboard = () => {
                 icon={<Users className="size-5" />}
                 title="Find patient"
                 description="Search patient records"
+                to="/dashboard/admin/patients"
               />
             </div>
           </div>

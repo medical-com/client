@@ -29,12 +29,13 @@ const MONTHS = [
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
-const YEARS = Array.from({ length: 100 }, (_, i) =>
-  String(CURRENT_YEAR - i),
-);
+const YEARS = Array.from({ length: 100 }, (_, i) => String(CURRENT_YEAR - i));
+
+// const dateSelectClassName =
+//   "h-8 w-full min-w-0 border-b bg-transparent px-2.5 py-1 text-base text-foreground transition-colors outline-none focus:border-b-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-b-destructive md:text-sm dark:bg-input/30";
 
 const dateSelectClassName =
-  "h-8 w-full min-w-0 border-b bg-transparent px-2.5 py-1 text-base text-foreground transition-colors outline-none focus:border-b-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-b-destructive md:text-sm dark:bg-input/30";
+  "h-10 rounded-[5px] border border-primary/15 bg-background px-2 text-sm outline-none focus:border-accent disabled:cursor-not-allowed disabled:opacity-50";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -54,10 +55,14 @@ const Register = () => {
       dateOfBirth: "",
       phoneNumber: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (values: RegisterFormValues) => {
+  const onSubmit = async ({
+    confirmPassword,
+    ...values
+  }: RegisterFormValues) => {
     try {
       await register(values);
       navigate("/auth/verify-email");
@@ -193,13 +198,11 @@ const Register = () => {
                     Date of birth
                   </FieldLabel>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-2 ">
                     <select
                       id={`${field.name}-day`}
                       value={dob.day}
-                      onChange={(event) =>
-                        update({ day: event.target.value })
-                      }
+                      onChange={(event) => update({ day: event.target.value })}
                       aria-invalid={fieldState.invalid}
                       className={dateSelectClassName}
                     >
@@ -235,9 +238,7 @@ const Register = () => {
 
                     <select
                       value={dob.year}
-                      onChange={(event) =>
-                        update({ year: event.target.value })
-                      }
+                      onChange={(event) => update({ year: event.target.value })}
                       aria-invalid={fieldState.invalid}
                       className={dateSelectClassName}
                     >
@@ -272,7 +273,7 @@ const Register = () => {
                   {...field}
                   id={field.name}
                   type="tel"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+48123456789"
                   autoComplete="tel"
                   aria-invalid={fieldState.invalid}
                 />
@@ -307,6 +308,29 @@ const Register = () => {
             )}
           />
 
+          <Controller
+            name="confirmPassword"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Confirm password</FieldLabel>
+
+                <Input
+                  {...field}
+                  id={field.name}
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  aria-invalid={fieldState.invalid}
+                />
+
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
           {registerError && (
             <p className="text-sm text-destructive">{registerError.message}</p>
           )}
@@ -322,7 +346,10 @@ const Register = () => {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link to="/auth/login" className="font-medium text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/auth/login"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
             Login
           </Link>
         </p>
